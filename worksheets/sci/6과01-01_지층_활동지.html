@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>층층이 쌓인 지층 탐험대 | 6학년 과학 [6과01-01]</title>
+<!--
+=====================================================================
+  초등 6학년 과학 인터랙티브 활동지 — 「지층과 화석」 1차시
+  성취기준 [6과01-01] 지층의 특징을 알고, 지층의 형성 과정을 모형으로 표현할 수 있다.
+  (2022 개정 과학과 교육과정, 교육부 고시 제2022-33호 [별책 9])
+
+  ✏️ 선생님 수정 안내
+  - 화면에 나오는 글, 개념 카드, 순서 카드, 퀴즈 문항은
+    아래 <script> 맨 위의 CONFIG 객체만 고치면 바뀝니다.
+  - 디자인 색상은 <style> 맨 위의 :root 변수에서 바꿀 수 있습니다.
+  - 외부 라이브러리·인터넷 연결 없이 파일 하나로 작동합니다.
+=====================================================================
+-->
+<style>
+  /* ============ 1. 색상·글꼴 설정 (여기서 전체 분위기를 바꿀 수 있어요) ============ */
+  :root{
+    --bg:#fff8f0;          /* 배경 */
+    --card:#ffffff;        /* 카드 배경 */
+    --ink:#4a3f55;         /* 기본 글자색 */
+    --muted:#8a7f96;       /* 흐린 글자색 */
+    --pink:#ffd6e0;
+    --peach:#ffe5cc;
+    --mint:#d4f5e9;
+    --sky:#d6ecff;
+    --lilac:#e8ddff;
+    --lemon:#fff4c2;
+    --accent:#ff8fab;      /* 강조(버튼) */
+    --accent2:#7cc6fe;     /* 보조 강조 */
+    --good:#3bb27a;        /* 정답 */
+    --bad:#ef6f6c;         /* 오답 */
+    --radius:20px;
+    --shadow:0 6px 18px rgba(120,90,140,.12);
+    --font:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","맑은 고딕","Noto Sans KR",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);
+       background-image:radial-gradient(circle at 10% 10%,#ffeef3 0,transparent 30%),
+                        radial-gradient(circle at 90% 30%,#e9f6ff 0,transparent 30%);
+       line-height:1.6;font-size:17px;-webkit-text-size-adjust:100%}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  h1,h2,h3{margin:0;line-height:1.3}
+  button{font-family:inherit;font-size:1rem;cursor:pointer;border:none}
+  input,textarea{font-family:inherit;font-size:1rem}
+
+  /* ============ 2. 상단 헤더 ============ */
+  header.top{background:linear-gradient(135deg,var(--pink),var(--lilac));border-radius:var(--radius);
+             padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  header.top::after{content:"🪨";position:absolute;right:-6px;bottom:-18px;font-size:90px;opacity:.25}
+  .badge{display:inline-block;background:#fff;border-radius:999px;padding:3px 12px;font-size:.85rem;
+         font-weight:700;color:#b04a7a;margin-right:6px;margin-bottom:6px}
+  header.top h1{font-size:1.6rem;margin:6px 0}
+  .std{background:rgba(255,255,255,.75);border-radius:14px;padding:10px 14px;font-size:.95rem;margin-top:8px}
+  .std b{color:#b04a7a}
+  .student{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .student label{flex:1 1 180px;background:#fff;border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:8px;font-weight:700}
+  .student input{flex:1;border:none;border-bottom:2px dashed #e3c6d6;padding:4px;background:transparent;min-width:0;outline:none}
+  .student input:focus{border-bottom-color:var(--accent)}
+
+  /* 진행 단계 표시 */
+  nav.steps{position:sticky;top:0;z-index:20;display:flex;gap:6px;padding:10px 0;background:var(--bg);overflow-x:auto}
+  nav.steps a{flex:1 0 auto;text-decoration:none;color:var(--ink);background:#fff;border-radius:999px;
+              padding:6px 12px;font-size:.88rem;font-weight:700;box-shadow:var(--shadow);text-align:center;white-space:nowrap}
+  nav.steps a.done{background:var(--mint)}
+  nav.steps a.done::after{content:" ✔"}
+
+  /* ============ 3. 공통 섹션 카드 ============ */
+  section.box{background:var(--card);border-radius:var(--radius);padding:20px;margin:16px 0;box-shadow:var(--shadow)}
+  .sec-title{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .sec-title .ico{font-size:1.8rem;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;flex:0 0 auto}
+  .sec-title h2{font-size:1.3rem}
+  .sec-title small{display:block;color:var(--muted);font-weight:400;font-size:.85rem}
+
+  /* 말풍선 + 캐릭터 */
+  .talk{display:flex;gap:10px;align-items:flex-start;margin:10px 0}
+  .talk .who{font-size:2.2rem;flex:0 0 auto;animation:bob 2.4s ease-in-out infinite}
+  .bubble{position:relative;background:var(--lemon);border-radius:18px;padding:10px 14px;flex:1}
+  .bubble::before{content:"";position:absolute;left:-8px;top:16px;border:8px solid transparent;border-right-color:var(--lemon);border-left:0}
+  @keyframes bob{50%{transform:translateY(-5px)}}
+
+  .btn{background:var(--accent);color:#fff;font-weight:800;padding:10px 18px;border-radius:999px;
+       box-shadow:0 4px 0 #e06c8c;transition:transform .1s}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #e06c8c}
+  .btn.blue{background:var(--accent2);box-shadow:0 4px 0 #4fa3df}
+  .btn.gray{background:#c9c0d3;box-shadow:0 4px 0 #a99fb4}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+  /* ============ 4. 개념 쏙쏙 카드 ============ */
+  .concepts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+  .ccard{border-radius:18px;padding:14px;opacity:0;transform:translateY(24px) scale(.96);
+         transition:opacity .6s ease,transform .6s ease;cursor:pointer;min-height:190px;display:flex;flex-direction:column}
+  .ccard.show{opacity:1;transform:none}
+  .ccard .emo{font-size:2rem}
+  .ccard h3{font-size:1.05rem;margin:4px 0}
+  .ccard p{margin:0;font-size:.95rem}
+  .ccard .pic{margin-top:auto;padding-top:8px}
+  .ccard:hover{transform:translateY(-4px) rotate(-.5deg)}
+  .ccard svg{width:100%;height:60px;display:block}
+
+  /* ============ 5. 탐구 활동 1: 지층 만들기 실험실 ============ */
+  .lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:16px}
+  .tray{display:flex;flex-direction:column;gap:10px}
+  .sed{display:flex;align-items:center;gap:10px;background:#fff;border:3px solid #f1e3d3;border-radius:16px;
+       padding:10px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;transition:transform .15s}
+  .sed:hover{transform:scale(1.02)}
+  .sed .swatch{width:52px;height:40px;border-radius:10px;flex:0 0 auto;border:2px solid rgba(0,0,0,.08)}
+  .sed b{display:block}
+  .sed span{font-size:.85rem;color:var(--muted)}
+  .selected{outline:4px solid var(--accent2);outline-offset:2px}
+
+  /* 퇴적물 무늬 (자갈/모래/진흙) — 색을 바꾸려면 여기 수정 */
+  .pat-gravel{background-color:#c8a67f;
+    background-image:radial-gradient(circle at 20% 30%,#8f7356 0 5px,transparent 6px),
+                     radial-gradient(circle at 70% 60%,#a7896a 0 7px,transparent 8px),
+                     radial-gradient(circle at 45% 80%,#7e6449 0 4px,transparent 5px);
+    background-size:34px 26px}
+  .pat-sand{background-color:#f2d59a;
+    background-image:radial-gradient(circle,#d8b46d 1.2px,transparent 1.6px);background-size:7px 7px}
+  .pat-mud{background-color:#9c8577;
+    background-image:linear-gradient(0deg,rgba(255,255,255,.06) 50%,transparent 50%);background-size:100% 6px}
+
+  .tank-area{display:flex;flex-direction:column;gap:10px}
+  .tank{position:relative;height:330px;border:5px solid #b9dcf7;border-top:none;border-radius:0 0 26px 26px;
+        background:linear-gradient(#e8f6ff,#cfeaff);overflow:hidden;transition:background .8s,border-color .8s}
+  .tank.drop-hover{box-shadow:0 0 0 5px var(--accent2) inset}
+  .water{position:absolute;inset:0;background:linear-gradient(rgba(124,198,254,.18),rgba(124,198,254,.42));
+         transition:opacity 1s;pointer-events:none}
+  .water::before{content:"〰️ 〰️ 〰️";position:absolute;top:6px;left:0;right:0;text-align:center;opacity:.5;animation:wave 3s linear infinite}
+  @keyframes wave{50%{transform:translateX(10px)}}
+  .layers{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column-reverse}
+  .layer{height:46px;border-top:2px solid rgba(0,0,0,.12);display:flex;align-items:center;justify-content:flex-end;
+         padding-right:10px;font-size:.8rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45);
+         transition:height .4s,filter .4s;animation:fall .7s ease-out}
+  @keyframes fall{from{transform:translateY(-280px);opacity:.3}to{transform:none;opacity:1}}
+  .layer.clickable{cursor:pointer}
+  .layer.clickable:hover{filter:brightness(1.15)!important;outline:3px solid #fff;outline-offset:-3px}
+  .layer.right{outline:4px solid var(--good);outline-offset:-4px}
+  .layer.wrong{animation:shake .4s}
+  @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .tank-msg{position:absolute;top:40%;left:0;right:0;text-align:center;color:#5b8db8;font-weight:700;pointer-events:none}
+  /* 땅 위로 솟아오른 뒤 모습 */
+  .tank.uplift{border-color:transparent;background:linear-gradient(#bfe6ff,#fff3d6)}
+  .tank.uplift .water{opacity:0}
+  .tank.uplift .layers{border-top:10px solid #8fd18c}
+  .tank .sun{position:absolute;right:16px;top:12px;font-size:2rem;opacity:0;transition:opacity 1s}
+  .tank.uplift .sun{opacity:1}
+  .slider-box{background:var(--sky);border-radius:16px;padding:10px 14px}
+  .slider-box input[type=range]{width:100%;accent-color:#4fa3df;height:28px}
+  .lab-steps{display:flex;gap:6px;flex-wrap:wrap;font-size:.85rem}
+  .lab-steps span{background:#f3eef7;border-radius:999px;padding:3px 10px}
+  .lab-steps span.on{background:var(--mint);font-weight:700}
+
+  /* ============ 6. 탐구 활동 2: 순서 맞추기 ============ */
+  .pool{display:flex;flex-wrap:wrap;gap:10px;min-height:70px;padding:10px;border:3px dashed #e4d6ef;border-radius:16px;background:#fcfaff}
+  .pool.drop-hover,.slot.drop-hover{background:var(--sky)}
+  .step-card{background:var(--peach);border-radius:14px;padding:8px 12px;font-size:.95rem;cursor:grab;
+             touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 3px 0 #f2c9a3;max-width:100%}
+  .slots{display:grid;gap:8px;margin-top:12px}
+  .slot{display:flex;align-items:center;gap:10px;min-height:56px;border-radius:14px;background:#f6f1fb;padding:6px 10px;border:3px solid transparent}
+  .slot .num{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--lilac);display:grid;place-items:center;font-weight:800}
+  .slot .holder{flex:1;min-height:40px;display:flex;align-items:center}
+  .slot .holder:empty::before{content:"여기에 카드를 놓아요";color:#bcb2c7;font-size:.9rem}
+  .slot.ok{border-color:var(--good);background:#e9f9f1}
+  .slot.no{border-color:var(--bad);background:#fff0f0}
+  .feedback{margin-top:10px;padding:10px 14px;border-radius:14px;display:none}
+  .feedback.show{display:block;animation:pop .35s}
+  .feedback.good{background:#e3f7ec;color:#1f7a4f}
+  .feedback.bad{background:#ffecec;color:#a33a37}
+  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+
+  /* 드래그 중 따라다니는 복사본 */
+  .ghost{position:fixed;pointer-events:none;z-index:999;opacity:.9;transform:rotate(3deg) scale(1.05);box-shadow:0 10px 24px rgba(0,0,0,.2)}
+
+  /* ============ 7. 형성 평가 ============ */
+  .q{border-radius:18px;padding:14px;margin:12px 0;background:#fbf8ff;border:2px solid #efe6f7}
+  .q h3{font-size:1.02rem;margin-bottom:8px}
+  .q h3 .qn{display:inline-block;background:var(--accent);color:#fff;border-radius:10px;padding:0 8px;margin-right:6px}
+  .opts{display:grid;gap:8px}
+  .opt{text-align:left;background:#fff;border:2px solid #e8dcf2;border-radius:14px;padding:10px 12px;color:var(--ink)}
+  .opt:hover:not(:disabled){border-color:var(--accent2);background:#f4faff}
+  .opt.correct{border-color:var(--good);background:#e3f7ec;font-weight:700}
+  .opt.correct::after{content:" ⭕"}
+  .opt.incorrect{border-color:var(--bad);background:#ffecec}
+  .opt.incorrect::after{content:" ❌"}
+  .opt:disabled{cursor:default}
+  .score-panel{display:none;text-align:center;background:linear-gradient(135deg,var(--lemon),var(--mint));border-radius:20px;padding:20px}
+  .score-panel.show{display:block;animation:pop .5s}
+  .score-panel .big{font-size:2.6rem;font-weight:900}
+  .stars{font-size:2rem;letter-spacing:4px}
+
+  /* ============ 8. 결과 ============ */
+  .summary{background:#fbf8ff;border-radius:16px;padding:14px}
+  .summary li{margin:4px 0}
+  .folder-box{margin-top:12px;background:var(--lemon);border-radius:16px;padding:10px 14px;display:none}
+  .folder-box.show{display:block}
+  .folder-label{font-size:.9rem;font-weight:700;word-break:break-all}
+  .folder-label.on{color:#1f7a4f}
+  textarea{width:100%;min-height:80px;border:2px solid #eadff3;border-radius:14px;padding:10px;resize:vertical}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:#4a3f55;color:#fff;
+         padding:10px 18px;border-radius:999px;transition:transform .3s;z-index:1000;max-width:90%;text-align:center}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:10px 0 30px}
+
+  /* 꽃가루(칭찬 효과) */
+  .confetti{position:fixed;top:-20px;font-size:22px;z-index:998;pointer-events:none;animation:drop 2.4s linear forwards}
+  @keyframes drop{to{transform:translateY(110vh) rotate(540deg)}}
+
+  /* ============ 9. 반응형 ============ */
+  @media (max-width:720px){
+    body{font-size:16px}
+    .lab{grid-template-columns:1fr}
+    .tray{flex-direction:row;flex-wrap:wrap}
+    .sed{flex:1 1 140px}
+    .tank{height:280px}
+    header.top h1{font-size:1.3rem}
+  }
+
+  /* ============ 10. 인쇄/PDF ============ */
+  @media print{
+    body{background:#fff;font-size:12pt}
+    nav.steps,.btn,.toast,.no-print,.confetti{display:none!important}
+    section.box,header.top{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+    .ccard{opacity:1!important;transform:none!important}
+    .layer{animation:none}
+    .print-only{display:block!important}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+  .print-only{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===================== 상단 헤더 ===================== -->
+  <header class="top">
+    <span class="badge" id="subjectBadge"></span><span class="badge" id="unitBadge"></span>
+    <h1 id="title"></h1>
+    <div class="std"><b id="stdCode"></b> <span id="stdText"></span></div>
+    <div class="student">
+      <label>🧒 이름 <input id="stuName" placeholder="이름을 써요" autocomplete="off"></label>
+      <label>🔢 학번 <input id="stuId" placeholder="예: 6-2-15" autocomplete="off"></label>
+    </div>
+  </header>
+
+  <nav class="steps no-print">
+    <a href="#s1" id="nav1">① 개념 쏙쏙</a>
+    <a href="#s2" id="nav2">② 지층 실험실</a>
+    <a href="#s3" id="nav3">③ 순서 맞추기</a>
+    <a href="#s4" id="nav4">④ 형성 평가</a>
+    <a href="#s5" id="nav5">⑤ 결과 저장</a>
+  </nav>
+
+  <!-- ===================== ① 개념 쏙쏙 (도입) ===================== -->
+  <section class="box" id="s1">
+    <div class="sec-title"><div class="ico" style="background:var(--pink)">💡</div>
+      <h2>개념 쏙쏙<small>카드를 눌러 하나씩 읽어 보세요</small></h2></div>
+    <div class="talk"><div class="who">🦖</div><div class="bubble" id="introTalk"></div></div>
+    <div class="concepts" id="concepts"></div>
+  </section>
+
+  <!-- ===================== ② 탐구 활동 1: 지층 만들기 실험실 ===================== -->
+  <section class="box" id="s2">
+    <div class="sec-title"><div class="ico" style="background:var(--sky)">🧪</div>
+      <h2>탐구 활동 1 · 지층 만들기 실험실<small>드래그(또는 눌러서 선택 → 수조 누르기)로 퇴적물을 물속에 넣어요</small></h2></div>
+    <div class="talk"><div class="who">🧑‍🔬</div><div class="bubble" id="labTalk">자갈, 모래, 진흙을 <b>물이 든 수조</b>로 옮겨 3층 이상 쌓아 보세요!</div></div>
+    <div class="lab-steps" id="labSteps">
+      <span data-k="stack">1. 쌓기</span><span data-k="press">2. 오랜 시간 눌리기</span>
+      <span data-k="up">3. 솟아오르고 깎이기</span><span data-k="old">4. 가장 오래된 층 찾기</span>
+    </div>
+    <div class="lab" style="margin-top:12px">
+      <div class="tray" id="tray"></div>
+      <div class="tank-area">
+        <div class="tank" id="tank" data-drop="tank">
+          <div class="sun">☀️</div>
+          <div class="water"></div>
+          <div class="tank-msg" id="tankMsg">💧 여기에 놓아요</div>
+          <div class="layers" id="layers"></div>
+        </div>
+        <div class="slider-box">
+          ⏳ <b>시간 흐르게 하기</b> (위에서 누르는 힘) : <span id="timeLabel">0년</span>
+          <input type="range" id="timeSlider" min="0" max="100" value="0" disabled>
+        </div>
+        <div class="row">
+          <button class="btn blue" id="upBtn" disabled>⛰️ 땅 위로 솟아오르게 하기</button>
+          <button class="btn gray" id="labReset">🔄 다시 하기</button>
+        </div>
+      </div>
+    </div>
+    <div class="feedback" id="labFb"></div>
+  </section>
+
+  <!-- ===================== ③ 탐구 활동 2: 지층 형성 순서 맞추기 ===================== -->
+  <section class="box" id="s3">
+    <div class="sec-title"><div class="ico" style="background:var(--peach)">🧩</div>
+      <h2>탐구 활동 2 · 지층이 만들어지는 순서<small>카드를 알맞은 번호 칸으로 옮겨요</small></h2></div>
+    <div class="pool" id="pool" data-drop="pool"></div>
+    <div class="slots" id="slots"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" id="orderCheck">✅ 확인하기</button>
+      <button class="btn gray" id="orderReset">🔄 섞어서 다시</button>
+    </div>
+    <div class="feedback" id="orderFb"></div>
+  </section>
+
+  <!-- ===================== ④ 형성 평가 (정리) ===================== -->
+  <section class="box" id="s4">
+    <div class="sec-title"><div class="ico" style="background:var(--lemon)">📝</div>
+      <h2>형성 평가<small>답을 누르면 바로 정답과 설명이 나와요</small></h2></div>
+    <div id="quiz"></div>
+    <div class="score-panel" id="scorePanel">
+      <div class="stars" id="stars"></div>
+      <div class="big" id="scoreBig"></div>
+      <p id="praise" style="font-size:1.1rem;font-weight:700"></p>
+      <button class="btn no-print" id="quizRetry">🔁 다시 풀어 보기</button>
+    </div>
+  </section>
+
+  <!-- ===================== ⑤ 결과 저장 및 인쇄 ===================== -->
+  <section class="box" id="s5">
+    <div class="sec-title"><div class="ico" style="background:var(--mint)">💾</div>
+      <h2>나의 활동 결과<small>배운 점을 쓰고 저장하거나 인쇄해요</small></h2></div>
+    <div class="summary" id="summary"></div>
+    <p style="margin:12px 0 6px;font-weight:700" id="reflectQ"></p>
+    <textarea id="reflect" placeholder="예) 지층은 아래층부터 차례대로 쌓여서 아래층이 더 오래되었다는 것을 알게 되었다."></textarea>
+    <!-- 📁 저장 폴더 선택 (PC 크롬·엣지에서만 보여요) -->
+    <div class="folder-box no-print" id="folderBox">
+      <div class="row">
+        <button class="btn gray" id="folderBtn">📁 저장 폴더 선택</button>
+        <span id="folderLabel" class="folder-label">아직 폴더를 고르지 않았어요 → 고르지 않으면 '다운로드' 폴더에 저장돼요</span>
+      </div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" id="saveBtn">💾 활동 결과 저장하기</button>
+      <button class="btn blue" id="printBtn">🖨️ 인쇄 / PDF 저장</button>
+    </div>
+    <p class="no-print" id="saveNote" style="font-size:.85rem;color:var(--muted)"></p>
+  </section>
+
+  <footer>2022 개정 교육과정 과학과 [6과01-01] · 초등 6학년 인터랙티브 활동지</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   ✏️ CONFIG — 선생님이 수정하는 곳
+   글자, 카드, 문항을 여기서만 고치면 화면 전체에 반영됩니다.
+   ===================================================================== */
+const CONFIG = {
+  subject: "6학년 과학",
+  unit: "1. 지층과 화석",
+  title: "🪨 층층이 쌓인 지층 탐험대",
+  standardCode: "[6과01-01]",
+  standardText: "지층의 특징을 알고, 지층의 형성 과정을 모형으로 표현할 수 있다.",
+  intro: "안녕! 나는 공룡 박사 '디노'야. 절벽에 보이는 줄무늬 땅, <b>지층</b>의 비밀을 함께 알아볼까?",
+
+  /* 개념 쏙쏙 카드 (3~4장 권장)
+     emo: 아이콘, color: 카드 배경색, pic: 그림 종류(flat/order/diff/bent) */
+  concepts: [
+    { emo:"🍰", color:"var(--pink)",  title:"지층은 땅속 무지개 케이크",
+      text:"자갈, 모래, 진흙 같은 알갱이가 <b>층층이 쌓여 줄무늬</b>를 이룬 것을 <b>지층</b>이라고 해요.", pic:"flat" },
+    { emo:"⬇️", color:"var(--sky)",   title:"아래층이 먼저, 위층이 나중",
+      text:"책을 쌓을 때 처음 놓은 책이 맨 아래에 있지요? 지층도 뒤집히지 않았다면 <b>아래층이 먼저 쌓인 오래된 층</b>이에요.", pic:"order" },
+    { emo:"🔍", color:"var(--mint)",  title:"층마다 생김새가 달라요",
+      text:"쌓인 알갱이의 크기와 종류가 달라서 층마다 <b>색깔과 두께</b>가 서로 달라요. 그래서 줄무늬로 보여요.", pic:"diff" },
+    { emo:"🌊", color:"var(--lilac)", title:"휘어지고 끊어진 지층도 있어요",
+      text:"대부분 수평으로 반듯하지만, 어떤 지층은 <b>구불구불 휘어지거나 뚝 끊어진</b> 모습도 있어요.", pic:"bent" }
+  ],
+
+  /* 탐구 활동 1 — 퇴적물 종류 (pattern은 CSS의 .pat-이름 과 연결) */
+  sediments: [
+    { id:"gravel", name:"자갈", desc:"알갱이가 굵어요", pattern:"pat-gravel", icon:"🪨" },
+    { id:"sand",   name:"모래", desc:"알갱이가 중간이에요", pattern:"pat-sand", icon:"🏖️" },
+    { id:"mud",    name:"진흙", desc:"알갱이가 아주 고와요", pattern:"pat-mud", icon:"🟤" }
+  ],
+  minLayers: 3,   // 최소 쌓아야 하는 층 수
+  maxLayers: 6,   // 최대 층 수
+
+  /* 탐구 활동 2 — 지층 형성 순서 (정답 순서대로 적기, 화면에서는 섞여 나와요) */
+  orderSteps: [
+    "🌊 흐르는 물이 자갈, 모래, 진흙을 운반해요.",
+    "⬇️ 운반된 알갱이가 물 밑바닥에 차례로 쌓여요.",
+    "📚 그 위에 새로운 알갱이가 계속 쌓이며 아래층을 눌러요.",
+    "⏳ 아주 오랜 시간이 지나면 단단하게 굳어 지층이 돼요.",
+    "⛰️ 땅이 솟아오르고 깎이면 지층을 볼 수 있어요."
+  ],
+
+  /* 형성 평가 문항 (3~5문항 권장)
+     options: 보기, answer: 정답 번호(0부터 시작!), explain: 해설 */
+  quiz: [
+    { q:"지층에 대한 설명으로 알맞은 것은 무엇인가요?",
+      options:["자갈, 모래, 진흙 등이 층층이 쌓여 있는 것","화산이 폭발하여 생긴 큰 구멍","바닷물이 증발하고 남은 소금 덩어리","나무뿌리가 땅속에 퍼진 모양"],
+      answer:0, explain:"지층은 자갈·모래·진흙 같은 알갱이가 층을 이루며 쌓여 있는 것이에요. 줄무늬처럼 보이는 것이 특징이에요." },
+    { q:"지층이 뒤집히지 않았다면, 가장 먼저 쌓인 층은 어디일까요?",
+      options:["맨 위층","가운데 층","맨 아래층","알 수 없다"],
+      answer:2, explain:"알갱이는 아래부터 차례대로 쌓여요. 그래서 맨 아래층이 가장 먼저 쌓인, 가장 오래된 층이에요." },
+    { q:"지층에서 여러 개의 층이 줄무늬처럼 구분되어 보이는 까닭은 무엇인가요?",
+      options:["햇빛이 비치는 방향이 달라서","층마다 알갱이의 크기와 색깔이 달라서","사람이 색칠을 해서","층마다 온도가 달라서"],
+      answer:1, explain:"층마다 쌓인 알갱이의 크기, 종류, 색깔이 달라서 서로 구분되는 줄무늬로 보여요." },
+    { q:"지층이 만들어지는 과정입니다. (   )에 들어갈 알맞은 말은?\n운반 → 물 밑에 쌓임 → (   ) → 솟아오르고 깎여 보임",
+      options:["바람에 날아가 흩어짐","오랜 시간 눌려 단단하게 굳음","불에 타서 녹아내림","얼음이 되어 얼어붙음"],
+      answer:1, explain:"쌓인 알갱이는 위에서 계속 눌리고 아주 오랜 시간이 지나면 단단하게 굳어 지층이 돼요." },
+    { q:"플라스틱 통에 자갈, 모래, 진흙을 넣어 만든 '지층 모형'과 실제 지층의 다른 점은?",
+      options:["모형은 층이 생기지 않는다","실제 지층은 아래층이 나중에 쌓인다","실제 지층은 아주 오랜 시간에 걸쳐 만들어지고 단단하다","모형과 실제 지층은 완전히 똑같다"],
+      answer:2, explain:"모형은 몇 분 만에 만들지만, 실제 지층은 아주 오랜 시간 동안 쌓이고 눌려 단단하게 굳은 것이에요. 쌓이는 순서는 똑같아요!" }
+  ],
+
+  /* 점수별 칭찬 메시지 (min 이상 점수일 때 표시, 높은 점수부터) */
+  praise: [
+    { min:100, msg:"🏆 완벽해요! 지층 박사로 임명합니다!" },
+    { min:80,  msg:"🌟 아주 잘했어요! 지층의 비밀을 거의 다 알아냈어요!" },
+    { min:60,  msg:"👍 좋아요! 틀린 문제의 해설을 다시 읽어 보면 더 완벽해질 거예요." },
+    { min:0,   msg:"💪 괜찮아요! 개념 카드를 다시 보고 한 번 더 도전해 봐요!" }
+  ],
+  reflectQuestion: "✍️ 오늘 지층에 대해 새롭게 알게 된 점을 한두 문장으로 써 보세요."
+};
+
+/* =====================================================================
+   아래부터는 프로그램 코드입니다. (수정하지 않아도 돼요)
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const state = {
+  layers: [],                  // 실험실에 쌓은 층 (퇴적물 id 목록, 0번이 맨 아래)
+  lab: { stage:"stack", pressed:false, uplifted:false, oldestFound:false, tries:0 },
+  order: { tries:0, correct:false },
+  quiz: { answers:[], done:false }
+};
+const STORAGE_KEY = "jicheung_6sci0101_v1";
+
+/* ---------- 공통: 알림, 꽃가루, 단계 표시 ---------- */
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2200); }
+function confetti(n=24){
+  const items=["🎉","⭐","🪨","💖","✨","🌈"];
+  for(let i=0;i<n;i++){ const c=document.createElement("div"); c.className="confetti";
+    c.textContent=items[i%items.length]; c.style.left=Math.random()*100+"vw"; c.style.animationDelay=(Math.random()*.6)+"s";
+    document.body.appendChild(c); setTimeout(()=>c.remove(),3200); }
+}
+function markNav(n){ $("#nav"+n).classList.add("done"); }
+function showFb(el, ok, html){ el.className="feedback show "+(ok?"good":"bad"); el.innerHTML=html; }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+/* ---------- 헤더 채우기 ---------- */
+$("#subjectBadge").textContent="📘 "+CONFIG.subject;
+$("#unitBadge").textContent=CONFIG.unit;
+$("#title").textContent=CONFIG.title;
+$("#stdCode").textContent=CONFIG.standardCode;
+$("#stdText").textContent=CONFIG.standardText;
+$("#introTalk").innerHTML=CONFIG.intro;
+$("#reflectQ").textContent=CONFIG.reflectQuestion;
+
+/* ---------- ① 개념 카드: 작은 그림(SVG) ---------- */
+function pic(kind){
+  const C=["#c8a67f","#f2d59a","#9c8577","#e8c3a0","#b7a08f"];
+  if(kind==="flat"||kind==="diff"){
+    const h = kind==="diff" ? [8,16,10,20,6] : [12,12,12,12,12];
+    let y=0, r="";
+    h.forEach((hh,i)=>{ r+=`<rect x="0" y="${y}" width="200" height="${hh}" fill="${C[i]}"/>`; y+=hh; });
+    return `<svg viewBox="0 0 200 60" preserveAspectRatio="none">${r}</svg>`;
+  }
+  if(kind==="order"){
+    return `<svg viewBox="0 0 200 60"><rect x="20" y="0" width="160" height="20" fill="${C[1]}"/><rect x="20" y="20" width="160" height="20" fill="${C[2]}"/><rect x="20" y="40" width="160" height="20" fill="${C[0]}"/>
+      <text x="100" y="15" font-size="12" text-anchor="middle" fill="#5a4a3a">3번째(나중)</text><text x="100" y="35" font-size="12" text-anchor="middle" fill="#fff">2번째</text><text x="100" y="55" font-size="12" text-anchor="middle" fill="#fff">1번째(먼저)</text></svg>`;
+  }
+  // bent: 휘어진 지층 + 끊어진 지층
+  let w="", k="";
+  for(let i=0;i<4;i++){ const y=12+i*12; w+=`<path d="M0 ${y} Q25 ${y-14} 50 ${y} T100 ${y}" stroke="${C[i]}" stroke-width="11" fill="none"/>`; }
+  for(let i=0;i<4;i++){ k+=`<rect x="110" y="${8+i*12}" width="40" height="12" fill="${C[i]}"/><rect x="150" y="${16+i*12}" width="50" height="12" fill="${C[i]}"/>`; }
+  return `<svg viewBox="0 0 200 64">${w}${k}<line x1="150" y1="0" x2="150" y2="64" stroke="#6b5b4b" stroke-width="2" stroke-dasharray="4 3"/></svg>`;
+}
+const conceptsEl=$("#concepts");
+CONFIG.concepts.forEach((c,i)=>{
+  const d=document.createElement("div");
+  d.className="ccard"; d.style.background=c.color;
+  d.innerHTML=`<div class="emo">${c.emo}</div><h3>${c.title}</h3><p>${c.text}</p><div class="pic">${pic(c.pic)}</div>`;
+  d.dataset.read="0";
+  d.addEventListener("click",()=>{ d.dataset.read="1"; d.style.boxShadow="0 0 0 4px #fff inset"; checkConcepts(); });
+  conceptsEl.appendChild(d);
+});
+function checkConcepts(){ if([...conceptsEl.children].every(c=>c.dataset.read==="1")){ markNav(1); toast("개념 카드를 모두 읽었어요! 실험실로 가 볼까요? 🧪"); } }
+/* 화면에 보이면 카드가 차례로 나타나는 애니메이션 */
+const io = ("IntersectionObserver" in window) ? new IntersectionObserver(ents=>{
+  ents.forEach(e=>{ if(e.isIntersecting){ [...conceptsEl.children].forEach((c,i)=>setTimeout(()=>c.classList.add("show"),i*250)); io.disconnect(); } });
+},{threshold:.2}) : null;
+if(io) io.observe(conceptsEl); else [...conceptsEl.children].forEach(c=>c.classList.add("show"));
+
+/* =====================================================================
+   드래그 앤 드롭 엔진 (마우스·터치 모두 지원)
+   - [data-drag] 요소를 끌어서 [data-drop] 영역에 놓을 수 있어요.
+   - 끌기 대신 '한 번 누르기 → 놓을 곳 누르기'로도 옮길 수 있어요.
+   ===================================================================== */
+let drag=null, picked=null;
+document.addEventListener("pointerdown",e=>{
+  const el=e.target.closest("[data-drag]"); if(!el || el.dataset.locked==="1") return;
+  drag={el,x0:e.clientX,y0:e.clientY,ghost:null,dx:0,dy:0};
+});
+document.addEventListener("pointermove",e=>{
+  if(!drag) return;
+  if(!drag.ghost){
+    if(Math.hypot(e.clientX-drag.x0,e.clientY-drag.y0)<8) return;
+    const r=drag.el.getBoundingClientRect();
+    const g=drag.el.cloneNode(true); g.classList.add("ghost"); g.classList.remove("selected");
+    g.style.width=r.width+"px"; drag.dx=drag.x0-r.left; drag.dy=drag.y0-r.top;
+    document.body.appendChild(g); drag.ghost=g;
+  }
+  e.preventDefault();
+  drag.ghost.style.left=(e.clientX-drag.dx)+"px"; drag.ghost.style.top=(e.clientY-drag.dy)+"px";
+  document.querySelectorAll(".drop-hover").forEach(z=>z.classList.remove("drop-hover"));
+  const z=zoneAt(e.clientX,e.clientY); if(z) z.classList.add("drop-hover");
+},{passive:false});
+document.addEventListener("pointerup",e=>{
+  if(!drag) return;
+  const d=drag; drag=null;
+  document.querySelectorAll(".drop-hover").forEach(z=>z.classList.remove("drop-hover"));
+  if(d.ghost){ d.ghost.remove(); const z=zoneAt(e.clientX,e.clientY); if(z) handleDrop(d.el,z); clearPick(); }
+  else { // 짧게 누름 = 선택
+    if(picked===d.el){ clearPick(); return; }
+    clearPick(); picked=d.el; d.el.classList.add("selected");
+  }
+});
+document.addEventListener("pointercancel",()=>{ if(drag&&drag.ghost) drag.ghost.remove(); drag=null; });
+function zoneAt(x,y){ const t=document.elementFromPoint(x,y); return t?t.closest("[data-drop]"):null; }
+function clearPick(){ if(picked) picked.classList.remove("selected"); picked=null; }
+/* 선택한 뒤 놓을 곳을 누르면 이동 */
+document.addEventListener("click",e=>{
+  if(!picked) return;
+  if(e.target.closest("[data-drag]")) return;
+  const z=e.target.closest("[data-drop]");
+  if(z){ handleDrop(picked,z); clearPick(); }
+});
+function handleDrop(el,zone){
+  const g=el.dataset.drag, z=zone.dataset.drop;
+  if(g==="sed" && z==="tank") addLayer(el.dataset.id);
+  if(g==="step" && (z==="slot"||z==="pool")) placeStep(el,zone);
+}
+
+/* =====================================================================
+   ② 탐구 활동 1: 지층 만들기 실험실
+   ===================================================================== */
+const tray=$("#tray"), layersEl=$("#layers"), tank=$("#tank"), slider=$("#timeSlider");
+CONFIG.sediments.forEach(s=>{
+  const d=document.createElement("div");
+  d.className="sed"; d.dataset.drag="sed"; d.dataset.id=s.id;
+  d.innerHTML=`<div class="swatch ${s.pattern}"></div><div><b>${s.icon} ${s.name}</b><span>${s.desc}</span></div>`;
+  tray.appendChild(d);
+});
+const sedById=id=>CONFIG.sediments.find(s=>s.id===id);
+const BASE_H=46;
+
+function addLayer(id){
+  if(state.lab.stage!=="stack"){ toast("이미 굳어진 지층이에요. 다시 하려면 '다시 하기'를 눌러요."); return; }
+  if(state.layers.length>=CONFIG.maxLayers){ toast(`수조가 가득 찼어요! (최대 ${CONFIG.maxLayers}층)`); return; }
+  state.layers.push(id); renderLayers(true);
+  $("#tankMsg").style.display="none";
+  const n=state.layers.length;
+  if(n>=CONFIG.minLayers){
+    slider.disabled=false;
+    $("#labTalk").innerHTML=`${n}층이 쌓였어요! 더 쌓아도 되고, 이제 <b>⏳ 시간 슬라이더</b>를 오른쪽으로 끝까지 밀어 오랜 시간이 흐르게 해 보세요.`;
+  } else {
+    $("#labTalk").innerHTML=`좋아요! ${n}층 쌓였어요. ${CONFIG.minLayers-n}층 더 쌓아 볼까요?`;
+  }
+  setLabStep();
+}
+function renderLayers(animLast){
+  layersEl.innerHTML="";
+  const t=+slider.value/100;
+  state.layers.forEach((id,i)=>{
+    const s=sedById(id), L=document.createElement("div");
+    L.className="layer "+s.pattern; L.dataset.idx=i;
+    L.style.height=(BASE_H*(1-0.35*t))+"px";
+    L.style.filter=`saturate(${1-0.25*t}) brightness(${1-0.12*t})`;
+    L.textContent=`${i+1}번째로 쌓은 ${s.name}`;
+    if(!(animLast && i===state.layers.length-1)) L.style.animation="none";
+    if(state.lab.uplifted && !state.lab.oldestFound){ L.classList.add("clickable"); L.textContent=s.name; L.onclick=()=>pickOldest(i,L); }
+    if(state.lab.oldestFound && i===0){ L.classList.add("right"); L.textContent="⭐ 가장 오래된 층 ("+s.name+")"; }
+    layersEl.appendChild(L);
+  });
+}
+slider.addEventListener("input",()=>{
+  const v=+slider.value;
+  const years = v===0 ? "0년" : (v<100 ? `약 ${Math.round(v*100).toLocaleString()}만 년` : "아주아주 오랜 시간 (수백만 년 이상)");
+  $("#timeLabel").textContent=years;
+  renderLayers(false);
+  if(v>=100 && !state.lab.pressed){
+    state.lab.pressed=true; state.lab.stage="pressed"; $("#upBtn").disabled=false;
+    $("#labTalk").innerHTML="위에 쌓인 알갱이에 눌려 층이 <b>얇고 단단하게 굳었어요!</b> 이제 <b>⛰️ 땅 위로 솟아오르게</b> 해 볼까요?";
+    setLabStep();
+  }
+});
+$("#upBtn").addEventListener("click",()=>{
+  if(!state.lab.pressed||state.lab.uplifted) return;
+  state.lab.uplifted=true; state.lab.stage="up"; slider.disabled=true; $("#upBtn").disabled=true;
+  tank.classList.add("uplift");
+  $("#labTalk").innerHTML="땅이 솟아오르고 깎여서 지층이 보여요! 🔍 <b>가장 먼저 쌓인(가장 오래된) 층</b>을 손가락으로 눌러 보세요.";
+  renderLayers(false); setLabStep();
+});
+function pickOldest(i,L){
+  state.lab.tries++;
+  if(i===0){
+    state.lab.oldestFound=true; state.lab.stage="done"; renderLayers(false); setLabStep(); markNav(2); confetti(18);
+    showFb($("#labFb"),true,"🎉 정답! 지층은 아래부터 차례로 쌓이므로 <b>맨 아래층이 가장 먼저 쌓인 오래된 층</b>이에요.");
+  } else {
+    L.classList.remove("wrong"); void L.offsetWidth; L.classList.add("wrong");
+    showFb($("#labFb"),false,"🤔 다시 생각해 봐요. 처음에 넣은 퇴적물은 수조의 <b>어디</b>에 가라앉았나요?");
+  }
+}
+function setLabStep(){
+  const order=["stack","pressed","up","done"], keys=["stack","press","up","old"];
+  const idx=order.indexOf(state.lab.stage);
+  document.querySelectorAll("#labSteps span").forEach((s,i)=>{
+    const reached = (i===0 && state.layers.length>=CONFIG.minLayers) || (i>0 && i<=idx);
+    s.classList.toggle("on",reached);
+  });
+}
+$("#labReset").addEventListener("click",()=>{
+  state.layers=[]; state.lab={stage:"stack",pressed:false,uplifted:false,oldestFound:false,tries:0};
+  slider.value=0; slider.disabled=true; $("#timeLabel").textContent="0년"; $("#upBtn").disabled=true;
+  tank.classList.remove("uplift"); $("#tankMsg").style.display=""; $("#labFb").className="feedback";
+  $("#labTalk").innerHTML="자갈, 모래, 진흙을 <b>물이 든 수조</b>로 옮겨 3층 이상 쌓아 보세요!";
+  $("#nav2").classList.remove("done"); renderLayers(false); setLabStep();
+});
+
+/* =====================================================================
+   ③ 탐구 활동 2: 지층 형성 순서 맞추기
+   ===================================================================== */
+const pool=$("#pool"), slots=$("#slots");
+function buildOrder(){
+  pool.innerHTML=""; slots.innerHTML=""; $("#orderFb").className="feedback";
+  CONFIG.orderSteps.forEach((_,i)=>{
+    const s=document.createElement("div"); s.className="slot"; s.dataset.drop="slot"; s.dataset.pos=i;
+    s.innerHTML=`<div class="num">${i+1}</div><div class="holder"></div>`; slots.appendChild(s);
+  });
+  let idx=CONFIG.orderSteps.map((_,i)=>i), sh;
+  do{ sh=shuffle(idx); }while(sh.every((v,i)=>v===i) && idx.length>1);   // 처음부터 정답 순서가 되지 않게
+  sh.forEach(i=>{
+    const c=document.createElement("div"); c.className="step-card"; c.dataset.drag="step"; c.dataset.key=i;
+    c.textContent=CONFIG.orderSteps[i]; pool.appendChild(c);
+  });
+}
+function placeStep(card,zone){
+  if(zone.dataset.drop==="pool"){ pool.appendChild(card); }
+  else{
+    const holder=zone.querySelector(".holder");
+    const existing=holder.querySelector(".step-card");
+    if(existing && existing!==card){
+      const from=card.closest(".slot");
+      if(from) from.querySelector(".holder").appendChild(existing); else pool.appendChild(existing); // 자리 바꾸기
+    }
+    holder.appendChild(card);
+  }
+  document.querySelectorAll(".slot").forEach(s=>s.classList.remove("ok","no"));
+}
+$("#orderCheck").addEventListener("click",()=>{
+  const all=[...slots.children];
+  if(all.some(s=>!s.querySelector(".step-card"))){ showFb($("#orderFb"),false,"📌 아직 빈 칸이 있어요. 카드를 모두 채운 뒤 확인해요!"); return; }
+  state.order.tries++;
+  let right=0;
+  all.forEach(s=>{ const ok=+s.querySelector(".step-card").dataset.key===+s.dataset.pos; s.classList.toggle("ok",ok); s.classList.toggle("no",!ok); if(ok) right++; });
+  if(right===all.length){
+    state.order.correct=true; markNav(3); confetti(20);
+    showFb($("#orderFb"),true,`🎉 완벽해요! <b>운반 → 쌓임 → 눌림 → 굳음 → 솟아오름·깎임</b> 순서로 지층이 만들어지고 우리 눈에 보이게 돼요. (${state.order.tries}번 만에 성공)`);
+  } else {
+    showFb($("#orderFb"),false,`🔎 ${all.length}개 중 ${right}개가 맞았어요. 빨간 칸을 다시 생각해 봐요.<br>💡 힌트: 알갱이는 먼저 <b>옮겨져야</b> 쌓일 수 있고, 지층은 <b>굳은 다음에</b> 땅 위로 드러나요.`);
+  }
+});
+$("#orderReset").addEventListener("click",()=>{ state.order.correct=false; $("#nav3").classList.remove("done"); buildOrder(); });
+
+/* =====================================================================
+   ④ 형성 평가
+   ===================================================================== */
+function buildQuiz(){
+  const box=$("#quiz"); box.innerHTML=""; state.quiz.answers=CONFIG.quiz.map(()=>null); state.quiz.done=false;
+  $("#scorePanel").classList.remove("show");
+  CONFIG.quiz.forEach((item,qi)=>{
+    const q=document.createElement("div"); q.className="q";
+    q.innerHTML=`<h3><span class="qn">${qi+1}</span>${esc(item.q).replace(/\n/g,"<br>")}</h3><div class="opts"></div><div class="feedback"></div>`;
+    const opts=q.querySelector(".opts");
+    item.options.forEach((o,oi)=>{
+      const b=document.createElement("button"); b.className="opt"; b.textContent=`${["①","②","③","④","⑤"][oi]||""} ${o}`;
+      b.addEventListener("click",()=>answer(qi,oi,q)); opts.appendChild(b);
+    });
+    box.appendChild(q);
+  });
+}
+function answer(qi,oi,qEl){
+  if(state.quiz.answers[qi]!==null) return;
+  const item=CONFIG.quiz[qi], ok=oi===item.answer; state.quiz.answers[qi]=oi;
+  const btns=qEl.querySelectorAll(".opt");
+  btns.forEach((b,i)=>{ b.disabled=true; if(i===item.answer) b.classList.add("correct"); else if(i===oi) b.classList.add("incorrect"); });
+  showFb(qEl.querySelector(".feedback"), ok, (ok?"⭕ <b>정답이에요!</b> ":"❌ <b>아쉬워요! 정답은 "+(item.answer+1)+"번이에요.</b> ")+"<br>📖 "+item.explain);
+  if(state.quiz.answers.every(a=>a!==null)) finishQuiz();
+}
+function quizScore(){ const n=CONFIG.quiz.length, r=state.quiz.answers.filter((a,i)=>a===CONFIG.quiz[i].answer).length; return {r,n,pct:Math.round(r/n*100)}; }
+function finishQuiz(){
+  state.quiz.done=true; const {r,n,pct}=quizScore();
+  $("#scoreBig").textContent=`${n}문제 중 ${r}문제 정답 (${pct}점)`;
+  $("#stars").textContent="⭐".repeat(r)+"☆".repeat(n-r);
+  $("#praise").textContent=CONFIG.praise.find(p=>pct>=p.min).msg;
+  $("#scorePanel").classList.add("show"); markNav(4);
+  if(pct>=80) confetti(30);
+  setTimeout(()=>$("#scorePanel").scrollIntoView({behavior:"smooth",block:"center"}),300);
+  renderSummary();
+}
+$("#quizRetry").addEventListener("click",()=>{ $("#nav4").classList.remove("done"); buildQuiz(); renderSummary(); $("#s4").scrollIntoView({behavior:"smooth"}); });
+
+/* =====================================================================
+   ⑤ 결과 요약 · 저장 · 인쇄
+   ===================================================================== */
+function resultData(){
+  const q=quizScore();
+  return {
+    name:$("#stuName").value.trim(), id:$("#stuId").value.trim(),
+    date:new Date().toLocaleString("ko-KR"),
+    layers:state.layers.map((id,i)=>`${i+1}층(아래부터): ${sedById(id).name}`),
+    labDone:state.lab.oldestFound, labTries:state.lab.tries,
+    orderDone:state.order.correct, orderTries:state.order.tries,
+    quizDone:state.quiz.done, quizRight:q.r, quizTotal:q.n, quizPct:q.pct,
+    reflect:$("#reflect").value.trim()
+  };
+}
+function renderSummary(){
+  const d=resultData();
+  $("#summary").innerHTML=`<ul style="margin:0;padding-left:20px">
+    <li>👤 <b>${esc(d.name||"(이름 미입력)")}</b> / 학번 ${esc(d.id||"-")}</li>
+    <li>🧪 지층 실험실: ${d.labDone?"✅ 완료":"⏳ 진행 중"} ${d.layers.length?`— 내가 쌓은 지층: ${d.layers.map(esc).join(", ")}`:""}</li>
+    <li>🧩 순서 맞추기: ${d.orderDone?`✅ 성공 (${d.orderTries}번 시도)`:"⏳ 아직 완성 전"}</li>
+    <li>📝 형성 평가: ${d.quizDone?`${d.quizTotal}문제 중 ${d.quizRight}문제 정답 (${d.quizPct}점)`:"⏳ 아직 다 풀지 않음"}</li>
+  </ul>
+  <div class="print-only" style="margin-top:8px"><b>✍️ 배운 점:</b> ${esc(d.reflect||"")}</div>`;
+}
+["#stuName","#stuId","#reflect"].forEach(s=>$(s).addEventListener("input",()=>{ renderSummary(); if($("#reflect").value.trim()) markNav(5); }));
+
+$("#saveBtn").addEventListener("click",async ()=>{
+  const d=resultData();
+  if(!d.name){ toast("✏️ 맨 위에 이름을 먼저 써 주세요!"); $("#stuName").focus(); return; }
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({d,layers:state.layers,reflect:d.reflect})); }catch(e){}
+  const txt=[
+    `[${CONFIG.subject}] ${CONFIG.unit} 활동 결과`,
+    `성취기준: ${CONFIG.standardCode} ${CONFIG.standardText}`,
+    `이름: ${d.name}   학번: ${d.id||"-"}   저장 시각: ${d.date}`,
+    "",
+    `■ 탐구 활동 1 (지층 실험실): ${d.labDone?"완료":"미완료"}`,
+    ...d.layers.map(l=>"   - "+l),
+    d.labDone?`   - 가장 오래된 층 찾기: ${d.labTries}번 만에 성공`:"",
+    `■ 탐구 활동 2 (순서 맞추기): ${d.orderDone?`성공 (${d.orderTries}번 시도)`:"미완성"}`,
+    `■ 형성 평가: ${d.quizDone?`${d.quizTotal}문제 중 ${d.quizRight}문제 정답 (${d.quizPct}점)`:"미완료"}`,
+    ...CONFIG.quiz.map((q,i)=>{ const a=state.quiz.answers[i]; return `   ${i+1}번: ${a===null?"미응답":(a===q.answer?"O":"X")+` (내 답 ${a+1}번 / 정답 ${q.answer+1}번)`}`; }),
+    "",
+    `■ 배운 점: ${d.reflect||"(작성하지 않음)"}`
+  ].filter(l=>l!=="").join("\n");
+  /* 파일 이름: 지층활동_학번_이름_날짜-시각.txt (다시 저장해도 덮어쓰지 않도록 시각을 붙여요) */
+  const n=new Date(), p=v=>String(v).padStart(2,"0");
+  const stamp=`${n.getFullYear()}${p(n.getMonth()+1)}${p(n.getDate())}-${p(n.getHours())}${p(n.getMinutes())}`;
+  const fileName=safeName(`지층활동_${d.id?d.id+"_":""}${d.name}_${stamp}.txt`);
+  const content="﻿"+txt;
+  const where = await saveToChosenFolder(fileName, content);   // ① 고른 폴더에 저장 시도
+  if(where){ markNav(5); toast(`📁 '${where}' 폴더에 저장했어요!`); return; }
+  downloadFile(fileName, content);                                 // ② 안 되면 다운로드 폴더로
+  markNav(5); toast("💾 '다운로드' 폴더에 저장했어요! 파일을 선생님께 제출해요.");
+});
+
+/* =====================================================================
+   📁 저장 폴더 기능
+   - PC의 크롬·엣지: 학생이 폴더를 한 번 고르면 그 폴더에 바로 저장돼요.
+     (고른 폴더는 이 기기에 기억되며, 브라우저를 다시 열면 '허용'을 한 번 더 누를 수 있어요.)
+   - 아이패드·스마트폰·사파리 등: 지원되지 않아 자동으로 '다운로드' 폴더에 저장돼요.
+   ===================================================================== */
+const FS_SUPPORTED = ("showDirectoryPicker" in window) && window.isSecureContext && window.self===window.top;
+let dirHandle=null;
+
+function safeName(s){ return s.replace(/[\\/:*?"<>|]/g,"_"); }
+function downloadFile(name, content){
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+}
+/* 고른 폴더 정보를 이 기기(IndexedDB)에 기억해 두는 도우미 */
+function openDB(){ return new Promise((res,rej)=>{ const r=indexedDB.open("jicheung-folder",1);
+  r.onupgradeneeded=()=>r.result.createObjectStore("h"); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+async function dbGet(k){ try{ const db=await openDB(); return await new Promise(res=>{ const q=db.transaction("h").objectStore("h").get(k); q.onsuccess=()=>res(q.result||null); q.onerror=()=>res(null); }); }catch(e){ return null; } }
+async function dbSet(k,v){ try{ const db=await openDB(); await new Promise(res=>{ const tx=db.transaction("h","readwrite"); tx.objectStore("h").put(v,k); tx.oncomplete=res; tx.onerror=res; }); }catch(e){} }
+
+function showFolder(){
+  const L=$("#folderLabel");
+  if(dirHandle){ L.textContent=`✅ 저장 폴더: 📁 ${dirHandle.name}`; L.classList.add("on"); $("#folderBtn").textContent="📁 저장 폴더 바꾸기"; }
+  else { L.textContent="아직 폴더를 고르지 않았어요 → 고르지 않으면 '다운로드' 폴더에 저장돼요"; L.classList.remove("on"); $("#folderBtn").textContent="📁 저장 폴더 선택"; }
+}
+async function pickFolder(){
+  try{
+    dirHandle=await window.showDirectoryPicker({id:"jicheung-save",mode:"readwrite"});
+    await dbSet("dir",dirHandle); showFolder(); toast(`📁 '${dirHandle.name}' 폴더에 저장하도록 설정했어요!`);
+  }catch(e){ if(e && e.name!=="AbortError") toast("⚠️ 이 폴더는 선택할 수 없어요. 다른 폴더를 골라 주세요."); }
+}
+/* 성공하면 폴더 이름을, 실패하면 null을 돌려줘요 */
+async function saveToChosenFolder(name, content){
+  if(!FS_SUPPORTED || !dirHandle) return null;
+  try{
+    let perm=await dirHandle.queryPermission({mode:"readwrite"});
+    if(perm!=="granted") perm=await dirHandle.requestPermission({mode:"readwrite"});
+    if(perm!=="granted"){ toast("폴더 사용을 허용하지 않아 '다운로드' 폴더에 저장할게요."); return null; }
+    const fh=await dirHandle.getFileHandle(name,{create:true});
+    const w=await fh.createWritable(); await w.write(content); await w.close();
+    return dirHandle.name;
+  }catch(e){ console.warn("폴더 저장 실패 → 다운로드로 대신 저장", e); return null; }
+}
+(async function initFolder(){
+  if(!FS_SUPPORTED){
+    $("#saveNote").textContent="※ 이 기기·브라우저에서는 결과가 '다운로드' 폴더에 글 파일(.txt)로 저장돼요. (원하는 폴더에 저장하려면 PC의 크롬이나 엣지에서 열어요) PDF는 인쇄 창에서 'PDF로 저장'을 고르세요.";
+    return;
+  }
+  $("#folderBox").classList.add("show");
+  $("#folderBtn").addEventListener("click",pickFolder);
+  dirHandle=await dbGet("dir"); showFolder();
+  $("#saveNote").textContent="※ 저장 폴더를 한 번 골라 두면 다음부터 그 폴더에 바로 저장돼요. 브라우저를 다시 열면 '허용'을 한 번 눌러야 할 수 있어요. PDF는 인쇄 창에서 'PDF로 저장'을 고르세요.";
+})();
+$("#printBtn").addEventListener("click",()=>{ renderSummary(); window.print(); });
+
+/* ---------- 이전에 저장한 이름·배운 점 불러오기 ---------- */
+try{
+  const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");
+  if(saved&&saved.d){ $("#stuName").value=saved.d.name||""; $("#stuId").value=saved.d.id||""; $("#reflect").value=saved.reflect||""; }
+}catch(e){}
+
+/* ---------- 시작 ---------- */
+renderLayers(false); setLabStep(); buildOrder(); buildQuiz(); renderSummary();
+</script>
+</body>
+</html>
