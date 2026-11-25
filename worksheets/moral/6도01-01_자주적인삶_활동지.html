@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧭 내 삶의 주인공은 나! | 6학년 도덕 [6도01-01]</title>
+<!--
+=====================================================================
+  초등 6학년 인터랙티브 활동지 (2022 개정 교육과정)
+  6학년 도덕 성취기준 [6도01-01] 자주적인 삶에 대한 이해를 바탕으로 자신의 생활계획을 세우고 실천하여 주체적인 삶의 태도를 기른다.
+
+  ✏️ 선생님 수정 안내
+  - 화면에 나오는 글, 개념 카드, 탐구 활동, 퀴즈는 <script> 맨 위의
+    CONFIG 객체만 고치면 바뀝니다. (각 항목 옆 주석 참고)
+  - 탐구 활동 종류(type): sort(분류), order(순서), match(짝짓기),
+    fill(빈칸 채우기), map(지도에 이름 붙이기), calc(혼합 계산),
+    listen(듣고 고르기), dynamics(셈여림 슬라이더), write(생각 쓰기)
+  - 디자인 색상은 <style> 맨 위의 :root 변수에서 바꿀 수 있습니다.
+  - 외부 라이브러리·인터넷 연결 없이 파일 하나로 작동합니다.
+=====================================================================
+-->
+<style>
+  /* ============ 1. 색상·글꼴 (여기서 전체 분위기를 바꿀 수 있어요) ============ */
+  :root{
+    --bg:#fff8f0; --card:#ffffff; --ink:#4a3f55; --muted:#8a7f96;
+    --pink:#ffd6e0; --peach:#ffe5cc; --mint:#d4f5e9; --sky:#d6ecff; --lilac:#e8ddff; --lemon:#fff4c2;
+    --accent:#ff8fab; --accent2:#7cc6fe; --good:#3bb27a; --bad:#ef6f6c;
+    --radius:20px; --shadow:0 6px 18px rgba(120,90,140,.12);
+    --font:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","맑은 고딕","Noto Sans KR",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);
+       background-image:radial-gradient(circle at 10% 10%,#ffeef3 0,transparent 30%),radial-gradient(circle at 90% 30%,#e9f6ff 0,transparent 30%);
+       line-height:1.6;font-size:17px;-webkit-text-size-adjust:100%}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  h1,h2,h3{margin:0;line-height:1.3}
+  button{font-family:inherit;font-size:1rem;cursor:pointer;border:none}
+  input,textarea{font-family:inherit;font-size:1rem}
+
+  /* ============ 2. 상단 헤더 ============ */
+  header.top{background:linear-gradient(135deg,var(--pink),var(--lilac));border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  header.top .deco{position:absolute;right:-6px;bottom:-18px;font-size:90px;opacity:.25;pointer-events:none}
+  .badge{display:inline-block;background:#fff;border-radius:999px;padding:3px 12px;font-size:.85rem;font-weight:700;color:#b04a7a;margin:0 6px 6px 0}
+  header.top h1{font-size:1.6rem;margin:6px 0}
+  .std{background:rgba(255,255,255,.75);border-radius:14px;padding:10px 14px;font-size:.95rem;margin-top:8px}
+  .std b{color:#b04a7a}
+  .goal{margin-top:6px;font-size:.95rem}
+  .student{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .student label{flex:1 1 180px;background:#fff;border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:8px;font-weight:700}
+  .student input{flex:1;border:none;border-bottom:2px dashed #e3c6d6;padding:4px;background:transparent;min-width:0;outline:none}
+  .student input:focus{border-bottom-color:var(--accent)}
+  nav.steps{position:sticky;top:0;z-index:20;display:flex;gap:6px;padding:10px 0;background:var(--bg);overflow-x:auto}
+  nav.steps a{flex:1 0 auto;text-decoration:none;color:var(--ink);background:#fff;border-radius:999px;padding:6px 12px;font-size:.88rem;font-weight:700;box-shadow:var(--shadow);text-align:center;white-space:nowrap}
+  nav.steps a.done{background:var(--mint)}
+  nav.steps a.done::after{content:" ✔"}
+
+  /* ============ 3. 공통 카드 ============ */
+  section.box{background:var(--card);border-radius:var(--radius);padding:20px;margin:16px 0;box-shadow:var(--shadow)}
+  .sec-title{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .sec-title .ico{font-size:1.8rem;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;flex:0 0 auto}
+  .sec-title h2{font-size:1.3rem}
+  .sec-title small{display:block;color:var(--muted);font-weight:400;font-size:.85rem}
+  .talk{display:flex;gap:10px;align-items:flex-start;margin:10px 0}
+  .talk .who{font-size:2.2rem;flex:0 0 auto;animation:bob 2.4s ease-in-out infinite}
+  .bubble{position:relative;background:var(--lemon);border-radius:18px;padding:10px 14px;flex:1}
+  .bubble::before{content:"";position:absolute;left:-8px;top:16px;border:8px solid transparent;border-right-color:var(--lemon);border-left:0}
+  @keyframes bob{50%{transform:translateY(-5px)}}
+  .btn{background:var(--accent);color:#fff;font-weight:800;padding:10px 18px;border-radius:999px;box-shadow:0 4px 0 #e06c8c;transition:transform .1s}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #e06c8c}
+  .btn.blue{background:var(--accent2);box-shadow:0 4px 0 #4fa3df}
+  .btn.gray{background:#c9c0d3;box-shadow:0 4px 0 #a99fb4}
+  .btn.small{padding:6px 12px;font-size:.9rem}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .feedback{margin-top:10px;padding:10px 14px;border-radius:14px;display:none}
+  .feedback.show{display:block;animation:pop .35s}
+  .feedback.good{background:#e3f7ec;color:#1f7a4f}
+  .feedback.bad{background:#ffecec;color:#a33a37}
+  .feedback.info{background:var(--sky);color:#2d5d86}
+  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+
+  /* ============ 4. 개념 카드 ============ */
+  .concepts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+  .ccard{border-radius:18px;padding:14px;opacity:0;transform:translateY(24px) scale(.96);transition:opacity .6s ease,transform .6s ease;cursor:pointer;display:flex;flex-direction:column}
+  .ccard.show{opacity:1;transform:none}
+  .ccard.read{box-shadow:0 0 0 4px #fff inset}
+  .ccard .emo{font-size:2rem}
+  .ccard h3{font-size:1.05rem;margin:4px 0}
+  .ccard p{margin:0;font-size:.95rem}
+  .ccard .ex{margin-top:auto;background:rgba(255,255,255,.75);border-radius:12px;padding:6px 10px;font-weight:800;text-align:center;font-size:1.05rem}
+  .ccard .ex:empty{display:none}
+  .ccard p + .ex{margin-top:10px}
+
+  /* ============ 5. 드래그 앤 드롭 공통 ============ */
+  .pool{display:flex;flex-wrap:wrap;gap:10px;min-height:64px;padding:10px;border:3px dashed #e4d6ef;border-radius:16px;background:#fcfaff}
+  .pool:empty::before{content:"모든 카드를 옮겼어요! ✨";color:#bcb2c7;font-size:.9rem;align-self:center}
+  .drop-hover{background:var(--sky)!important}
+  .dcard{background:var(--peach);border-radius:14px;padding:8px 12px;font-size:.95rem;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 3px 0 #f2c9a3;max-width:100%;line-height:1.4}
+  .dcard.ok{background:#c9f0dc;box-shadow:0 3px 0 #94d6b4}
+  .dcard.no{background:#ffd3d1;box-shadow:0 3px 0 #f0a7a3}
+  .selected{outline:4px solid var(--accent2);outline-offset:2px}
+  .ghost{position:fixed;pointer-events:none;z-index:999;opacity:.9;transform:rotate(3deg) scale(1.05);box-shadow:0 10px 24px rgba(0,0,0,.2)}
+  /* 칸(슬롯) */
+  .slots{display:grid;gap:8px;margin-top:12px}
+  .slot{display:flex;align-items:center;gap:10px;min-height:56px;border-radius:14px;background:#f6f1fb;padding:6px 10px;border:3px solid transparent}
+  .slot .num{flex:0 0 auto;min-width:34px;height:34px;border-radius:17px;background:var(--lilac);display:grid;place-items:center;font-weight:800;padding:0 8px}
+  .slot .left{flex:1 1 45%;font-size:.95rem}
+  .slot .holder{flex:1 1 55%;min-height:40px;display:flex;align-items:center}
+  .slot .holder:empty::before{content:"여기에 카드를 놓아요";color:#bcb2c7;font-size:.9rem}
+  .slot.ok{border-color:var(--good);background:#e9f9f1}
+  .slot.no{border-color:var(--bad);background:#fff0f0}
+  .match .slot{flex-wrap:wrap}
+  /* 분류 바구니 */
+  .bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:12px}
+  .bin{border-radius:16px;padding:10px;min-height:150px;border:3px solid transparent}
+  .bin h4{margin:0 0 8px;text-align:center;font-size:1.05rem}
+  .bin .holder{display:flex;flex-direction:column;gap:6px;min-height:80px}
+  /* 빈칸 채우기 */
+  .fill-text{font-size:1.08rem;line-height:2.6;background:#fbf8ff;border-radius:16px;padding:12px 16px;margin-top:12px}
+  .blank{display:inline-flex;vertical-align:middle;min-width:110px;min-height:40px;border-bottom:3px solid var(--accent2);background:#eef7ff;border-radius:10px;margin:0 4px;padding:2px;align-items:center;justify-content:center}
+  .blank .holder{display:inline-flex}
+  .blank.ok{background:#e3f7ec;border-color:var(--good)}
+  .blank.no{background:#ffecec;border-color:var(--bad)}
+  /* 지도 */
+  .mapwrap{position:relative;max-width:420px;margin:12px auto 0;background:linear-gradient(#e6f4ff,#d3ecff);border-radius:18px;overflow:hidden}
+  .mapwrap svg{display:block;width:100%;height:auto}
+  .spot{position:absolute;transform:translate(-50%,-50%);min-width:72px;min-height:34px;border-radius:12px;background:rgba(255,255,255,.85);border:2px dashed #9b8bb0;display:flex;align-items:center;justify-content:center;padding:2px;font-size:.8rem}
+  .spot .holder:empty::before{content:attr(data-n);color:#9b8bb0;font-weight:800}
+  .spot .dcard{font-size:.8rem;padding:4px 8px}
+  .spot.ok{border:3px solid var(--good);background:#e9f9f1}
+  .spot.no{border:3px solid var(--bad);background:#fff0f0}
+  /* 혼합 계산 */
+  .expr{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;font-size:1.9rem;font-weight:800;background:#fbf8ff;border-radius:18px;padding:16px;min-height:90px}
+  .expr .num{padding:0 4px}
+  .expr .par{color:#b04a7a}
+  .expr .op{background:var(--lemon);border-radius:12px;min-width:48px;height:48px;font-size:1.6rem;font-weight:900;color:var(--ink);box-shadow:0 3px 0 #e8d98a}
+  .expr .op:hover{background:#ffe98a}
+  .expr .new{animation:pop .5s;color:#2d8a5f}
+  .calc-log{margin-top:10px;font-size:1rem}
+  .calc-log li{margin:2px 0}
+  /* 듣고 고르기 */
+  .litem{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px;border-radius:14px;background:#fbf8ff;margin:8px 0;border:2px solid #efe6f7}
+  .litem .say{font-weight:800;font-size:1.1rem;min-width:140px}
+  .litem .choice{background:#fff;border:2px solid #e8dcf2;border-radius:12px;padding:6px 14px;font-size:1.05rem;color:var(--ink)}
+  .litem .choice.correct{border-color:var(--good);background:#e3f7ec}
+  .litem .choice.incorrect{border-color:var(--bad);background:#ffecec}
+  .litem.done{border-color:var(--good)}
+  .speak{background:var(--accent2);color:#fff;border-radius:50%;width:44px;height:44px;font-size:1.2rem;flex:0 0 auto}
+  .litem .msg{flex-basis:100%;font-size:.92rem}
+  /* 셈여림 */
+  .dyn{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+  .dyn-sym{font-size:4rem;font-weight:900;font-style:italic;font-family:Georgia,serif;text-align:center;line-height:1;transition:transform .2s}
+  .dyn-name{text-align:center;font-weight:700}
+  .dyn-bars{display:flex;align-items:flex-end;gap:6px;height:80px;justify-content:center;margin:8px 0}
+  .dyn-bars i{width:22px;border-radius:6px 6px 0 0;background:var(--accent2);transition:height .2s,opacity .2s}
+  .mission{background:var(--lemon);border-radius:16px;padding:12px;text-align:center}
+  .mission .target{font-size:2.4rem;font-weight:900;font-style:italic;font-family:Georgia,serif}
+  input[type=range]{width:100%;accent-color:#4fa3df;height:30px}
+  /* 생각 쓰기 */
+  .wfield{margin:10px 0}
+  .wfield label{display:block;font-weight:700;margin-bottom:4px}
+  .wfield input[type=text],textarea{width:100%;border:2px solid #eadff3;border-radius:14px;padding:10px;background:#fff}
+  textarea{min-height:80px;resize:vertical}
+  .wfield input[type=color]{width:80px;height:44px;border:none;background:none;padding:0}
+
+  /* ============ 6. 형성 평가 ============ */
+  .q{border-radius:18px;padding:14px;margin:12px 0;background:#fbf8ff;border:2px solid #efe6f7}
+  .q h3{font-size:1.02rem;margin-bottom:8px}
+  .q h3 .qn{display:inline-block;background:var(--accent);color:#fff;border-radius:10px;padding:0 8px;margin-right:6px}
+  .opts{display:grid;gap:8px}
+  .opt{text-align:left;background:#fff;border:2px solid #e8dcf2;border-radius:14px;padding:10px 12px;color:var(--ink)}
+  .opt:hover:not(:disabled){border-color:var(--accent2);background:#f4faff}
+  .opt.correct{border-color:var(--good);background:#e3f7ec;font-weight:700}
+  .opt.correct::after{content:" ⭕"}
+  .opt.incorrect{border-color:var(--bad);background:#ffecec}
+  .opt.incorrect::after{content:" ❌"}
+  .opt:disabled{cursor:default}
+  .score-panel{display:none;text-align:center;background:linear-gradient(135deg,var(--lemon),var(--mint));border-radius:20px;padding:20px}
+  .score-panel.show{display:block;animation:pop .5s}
+  .score-panel .big{font-size:2.2rem;font-weight:900}
+  .stars{font-size:2rem;letter-spacing:4px}
+
+  /* ============ 7. 결과 ============ */
+  .summary{background:#fbf8ff;border-radius:16px;padding:14px}
+  .summary li{margin:4px 0}
+  .folder-box{margin-top:12px;background:var(--lemon);border-radius:16px;padding:10px 14px;display:none}
+  .folder-box.show{display:block}
+  .folder-label{font-size:.9rem;font-weight:700;word-break:break-all}
+  .folder-label.on{color:#1f7a4f}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:#4a3f55;color:#fff;padding:10px 18px;border-radius:999px;transition:transform .3s;z-index:1000;max-width:90%;text-align:center}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:10px 0 30px}
+  .confetti{position:fixed;top:-20px;font-size:22px;z-index:998;pointer-events:none;animation:drop 2.4s linear forwards}
+  @keyframes drop{to{transform:translateY(110vh) rotate(540deg)}}
+
+  /* ============ 8. 반응형 ============ */
+  @media (max-width:720px){
+    body{font-size:16px}
+    header.top h1{font-size:1.3rem}
+    .dyn{grid-template-columns:1fr}
+    .slot .left,.slot .holder{flex-basis:100%}
+    .expr{font-size:1.5rem}
+    .expr .op{min-width:42px;height:42px}
+    .spot{min-width:58px;font-size:.7rem}
+    .spot .dcard{font-size:.7rem;padding:3px 5px}
+  }
+  /* ============ 9. 인쇄/PDF ============ */
+  @media print{
+    body{background:#fff;font-size:12pt}
+    nav.steps,.btn,.toast,.no-print,.confetti,.speak{display:none!important}
+    section.box,header.top{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+    .ccard{opacity:1!important;transform:none!important}
+    .print-only{display:block!important}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+  .print-only{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- ===================== 상단 헤더 ===================== -->
+  <header class="top">
+    <div class="deco" id="deco"></div>
+    <span class="badge" id="subjectBadge"></span><span class="badge" id="unitBadge"></span>
+    <h1 id="title"></h1>
+    <div class="std"><b id="stdCode"></b> <span id="stdText"></span>
+      <div class="goal">🎯 <b>오늘의 목표</b> : <span id="goalText"></span></div></div>
+    <div class="student">
+      <label>🧒 이름 <input id="stuName" placeholder="이름을 써요" autocomplete="off"></label>
+      <label>🔢 학번 <input id="stuId" placeholder="예: 6-2-15" autocomplete="off"></label>
+    </div>
+  </header>
+  <nav class="steps no-print" id="nav"></nav>
+
+  <!-- ===================== 개념 쏙쏙 (도입) ===================== -->
+  <section class="box" id="s-concept">
+    <div class="sec-title"><div class="ico" style="background:var(--pink)">💡</div>
+      <h2>개념 쏙쏙<small>카드를 눌러 하나씩 읽어 보세요</small></h2></div>
+    <div class="talk"><div class="who" id="mascot"></div><div class="bubble" id="introTalk"></div></div>
+    <div class="concepts" id="concepts"></div>
+  </section>
+
+  <!-- ===================== 탐구 활동 (전개) — CONFIG.activities 로 자동 생성 ===================== -->
+  <div id="activities"></div>
+
+  <!-- ===================== 형성 평가 (정리) ===================== -->
+  <section class="box" id="s-quiz">
+    <div class="sec-title"><div class="ico" style="background:var(--lemon)">📝</div>
+      <h2>형성 평가<small>답을 누르면 바로 정답과 설명이 나와요</small></h2></div>
+    <div id="quiz"></div>
+    <div class="score-panel" id="scorePanel">
+      <div class="stars" id="stars"></div>
+      <div class="big" id="scoreBig"></div>
+      <p id="praise" style="font-size:1.1rem;font-weight:700"></p>
+      <button class="btn no-print" id="quizRetry">🔁 다시 풀어 보기</button>
+    </div>
+  </section>
+
+  <!-- ===================== 결과 저장 및 인쇄 ===================== -->
+  <section class="box" id="s-result">
+    <div class="sec-title"><div class="ico" style="background:var(--mint)">💾</div>
+      <h2>나의 활동 결과<small>배운 점을 쓰고 저장하거나 인쇄해요</small></h2></div>
+    <div class="summary" id="summary"></div>
+    <p style="margin:12px 0 6px;font-weight:700" id="reflectQ"></p>
+    <textarea id="reflect"></textarea>
+    <div class="folder-box no-print" id="folderBox">
+      <div class="row">
+        <button class="btn gray" id="folderBtn">📁 저장 폴더 선택</button>
+        <span id="folderLabel" class="folder-label"></span>
+      </div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" id="saveBtn">💾 활동 결과 저장하기</button>
+      <button class="btn blue" id="printBtn">🖨️ 인쇄 / PDF 저장</button>
+    </div>
+    <p class="no-print" id="saveNote" style="font-size:.85rem;color:var(--muted)"></p>
+  </section>
+  <footer id="footer"></footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   ✏️ CONFIG — 선생님이 수정하는 곳
+   ===================================================================== */
+const CONFIG = {
+  fileTag: "6도01-01_자주적인삶",
+  subject: "6학년 도덕",
+  unit: "자신과의 관계",
+  title: "🧭 내 삶의 주인공은 나!",
+  standardCode: "[6도01-01]",
+  standardText: "자주적인 삶에 대한 이해를 바탕으로 자신의 생활계획을 세우고 실천하여 주체적인 삶의 태도를 기른다.",
+  goal: "스스로 생각하고 결정하는 ‘자주적인 삶’이 무엇인지 알고, 나만의 생활계획을 세워 실천할 수 있어요!",
+  mascot: "🦁", deco: "🌱",
+  intro: "안녕! 나는 용감한 사자 ‘주도’야. 누가 시켜서가 아니라 <b>내가 스스로</b> 해낼 때 정말 뿌듯하지? 오늘은 내 삶의 운전대를 직접 잡아 보자!",
+
+  concepts: [
+    { emo:"🚗", color:"var(--peach)", title:"내 삶의 운전대 잡기",
+      text:"<b>자주적인 삶</b>이란 내가 <b>스스로 생각하고 판단해서 행동</b>하고, 그 결과에 <b>책임</b>지는 삶이에요.",
+      example:"스스로 생각 → 판단 → 행동 → 책임" },
+    { emo:"👂", color:"var(--sky)", title:"자주 ≠ 제멋대로",
+      text:"자주적인 사람은 <b>다른 사람의 의견도 귀 기울여 듣고</b>, 그것을 바탕으로 스스로 올바르게 판단해요. 내 마음대로만 하는 것과는 달라요.",
+      example:"듣고 → 생각하고 → 스스로 결정!" },
+    { emo:"🗓️", color:"var(--mint)", title:"생활계획 세우기",
+      text:"내 생활을 돌아보고 <b>실천할 수 있는 목표</b>와 <b>구체적인 방법</b>을 정해요. 너무 어려운 계획보다 꾸준히 할 수 있는 계획이 좋아요.",
+      example:"“매일 저녁 9시에 다음 날 준비물 챙기기”" },
+    { emo:"🔁", color:"var(--lilac)", title:"실천하고 되돌아보기",
+      text:"계획을 실천한 뒤 <b>잘된 점과 아쉬운 점을 점검</b>하고, 필요하면 계획을 고쳐서 다시 도전해요.",
+      example:"실천 ✔ → 점검 🔍 → 고치기 ✏️ → 다시!" }
+  ],
+
+  activities: [
+    { type:"sort", short:"자주적인 행동 찾기", title:"자주적인 행동일까?",
+      how:"행동 카드를 알맞은 바구니에 넣어요",
+      guide:"카드 속 행동이 <b>스스로 생각하고 책임지는 행동</b>인지 살펴보고 분류해 봐요!", guideEmoji:"🦁",
+      categories: [
+        { label:"😊 자주적인 행동", color:"var(--mint)" },
+        { label:"🤔 자주적이지 않은 행동", color:"var(--pink)" }
+      ],
+      items: [
+        { text:"다음 날 준비물을 스스로 챙겨요", cat:0 },
+        { text:"할 일을 계획표에 적고 지키려고 노력해요", cat:0 },
+        { text:"잘못했을 때 핑계 대지 않고 스스로 책임져요", cat:0 },
+        { text:"친구 의견을 들은 뒤 옳은지 생각해 보고 결정해요", cat:0, tip:"다른 사람 의견을 듣고 스스로 판단하는 것은 자주적인 행동이에요." },
+        { text:"친구가 하자는 대로 무조건 따라 해요", cat:1, tip:"옳은지 생각해 보지 않고 무조건 따르는 것은 자주적이지 않아요." },
+        { text:"부모님이 깨워 주셔야만 일어나요", cat:1 },
+        { text:"숙제를 친구 것을 보고 베껴요", cat:1 },
+        { text:"다른 사람 말은 전혀 듣지 않고 내 마음대로 해요", cat:1, tip:"제멋대로 하는 것은 자주적인 것과 달라요." }
+      ],
+      success:"🎉 자주적인 행동을 정확하게 찾아냈어요!" },
+    { type:"order", short:"계획 세우는 순서", title:"생활계획을 세우는 순서",
+      how:"카드를 알맞은 번호 칸으로 옮겨요",
+      guide:"생활계획은 어떤 순서로 세우고 실천하면 좋을까요?", guideEmoji:"🗓️",
+      steps: [   // 정답 순서대로 (화면에서는 섞여 나와요)
+        "🪞 나의 생활 모습을 돌아봐요.",
+        "🎯 고치고 싶은 점을 바탕으로 목표를 정해요.",
+        "📝 목표를 이룰 구체적인 실천 방법을 정해요.",
+        "💪 계획대로 꾸준히 실천해요.",
+        "🔍 잘 지켰는지 점검하고 계획을 고쳐요."
+      ],
+      hint:"먼저 나를 ‘돌아봐야’ 목표를 정할 수 있고, 실천한 ‘뒤에’ 점검할 수 있어요.",
+      success:"🎉 생활계획의 순서를 완벽하게 알았어요!" },
+    { type:"write", short:"나의 생활계획", title:"나의 생활계획 세우기",
+      how:"나에게 꼭 맞는 계획을 직접 써요",
+      guide:"이제 진짜 나만의 계획을 세워 봐요! <b>실천할 수 있는 작은 목표</b>부터 시작해요.", guideEmoji:"✍️",
+      fields: [  // kind: text(한 줄), textarea(여러 줄), color(색 고르기)
+        { label:"🪞 돌아본 나의 생활 (고치고 싶은 점)", kind:"text", placeholder:"예) 아침에 늦게 일어나 자주 서두른다." },
+        { label:"🎯 나의 목표", kind:"text", placeholder:"예) 아침 7시 30분에 스스로 일어나기" },
+        { label:"📝 구체적인 실천 방법", kind:"textarea", placeholder:"예) 밤 10시 전에 잠자리에 든다. 알람을 맞춰 두고 스스로 끈다." },
+        { label:"🔍 점검 방법", kind:"text", placeholder:"예) 달력에 매일 ○, × 표시하기" }
+      ],
+      success:"🌟 멋진 생활계획이에요! 오늘부터 작은 것부터 실천해 봐요." }
+  ],
+
+  quiz: [
+    { q:"자주적인 삶에 대한 설명으로 가장 알맞은 것은?",
+      options:["다른 사람이 정해 준 대로만 사는 삶","스스로 생각하고 판단하여 행동하고 책임지는 삶","하고 싶은 것만 마음대로 하는 삶","아무것도 결정하지 않는 삶"],
+      answer:1, explain:"자주적인 삶은 스스로 생각·판단하여 행동하고, 그 결과에 책임지는 삶이에요." },
+    { q:"다음 중 자주적인 행동은?",
+      options:["엄마가 시킬 때만 방을 정리한다.","친구가 놀자고 하면 숙제를 미룬다.","다음 날 시간표를 보고 준비물을 스스로 챙긴다.","모르는 문제는 친구 답을 베낀다."],
+      answer:2, explain:"누가 시키지 않아도 스스로 할 일을 챙기는 것이 자주적인 행동이에요." },
+    { q:"자주적인 삶에 대한 설명으로 알맞지 ‘않은’ 것은?",
+      options:["내 일은 스스로 계획하고 실천한다.","다른 사람의 말은 전혀 듣지 않고 내 마음대로 한다.","결과에 대해 책임을 진다.","다른 사람의 의견을 듣고 스스로 판단한다."],
+      answer:1, explain:"자주적인 것은 제멋대로 하는 것과 달라요. 다른 사람의 의견을 존중하며 스스로 올바르게 판단해요." },
+    { q:"생활계획을 세울 때 가장 알맞은 목표는?",
+      options:["하루에 10시간씩 공부하기","내일부터 모든 습관 다 고치기","매일 저녁 9시에 다음 날 준비물 챙기기","아무 때나 생각날 때 하기"],
+      answer:2, explain:"실천할 수 있고, 언제·무엇을 할지 구체적인 목표가 좋은 계획이에요." },
+    { q:"세운 계획이 잘 지켜지지 않을 때 가장 알맞은 행동은?",
+      options:["계획을 포기한다.","지키지 못한 까닭을 돌아보고 계획을 고쳐 다시 실천한다.","다른 사람 탓을 한다.","계획을 지킨 척한다."],
+      answer:1, explain:"점검하고 반성하여 계획을 고쳐 다시 도전하는 것도 자주적인 삶의 중요한 모습이에요." }
+  ],
+  praise: [
+    { min:100, msg:"🏆 완벽해요! 진정한 내 삶의 주인공이에요!" },
+    { min:80,  msg:"🌟 아주 잘했어요! 자주적인 생활의 달인이 될 거예요!" },
+    { min:60,  msg:"👍 좋아요! 해설을 읽고 한 번 더 생각해 봐요." },
+    { min:0,   msg:"💪 괜찮아요! 개념 카드를 다시 보고 도전해요!" }
+  ],
+  reflectQuestion: "✍️ 내가 세운 계획을 실천하기 위해 오늘부터 할 수 있는 일을 써 보세요.",
+  reflectExample: "예) 오늘 밤 자기 전에 알람을 7시 30분으로 맞추고 준비물을 챙겨 두겠다."
+};
+
+/* =====================================================================
+   아래부터는 프로그램 코드입니다. (수정하지 않아도 돼요)
+   ===================================================================== */
+const $=s=>document.querySelector(s);
+const state={ acts:[], quiz:{answers:[],done:false} };
+const STORAGE_KEY="ws_"+CONFIG.fileTag;
+
+/* ---------- 공통 도우미 ---------- */
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2400);}
+function confetti(n=24){const it=["🎉","⭐","💖","✨","🌈",CONFIG.mascot];for(let i=0;i<n;i++){const c=document.createElement("div");c.className="confetti";c.textContent=it[i%it.length];c.style.left=Math.random()*100+"vw";c.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(c);setTimeout(()=>c.remove(),3200);}}
+function showFb(el,kind,html){el.className="feedback show "+kind;el.innerHTML=html;}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNotSame(a){if(a.length<2)return a.slice();let s;do{s=shuffle(a);}while(s.every((v,i)=>v===a[i]));return s;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!==undefined)e.innerHTML=html;return e;}
+function markNav(id,on=true){const a=document.querySelector(`nav a[href="#${id}"]`);if(a)a.classList.toggle("done",on);}
+
+/* ---------- 헤더 ---------- */
+document.title=CONFIG.title.replace(/<[^>]+>/g,"")+" | "+CONFIG.subject+" "+CONFIG.standardCode;
+$("#deco").textContent=CONFIG.deco||CONFIG.mascot;
+$("#subjectBadge").textContent="📘 "+CONFIG.subject;
+$("#unitBadge").textContent=CONFIG.unit;
+$("#title").textContent=CONFIG.title;
+$("#stdCode").textContent=CONFIG.standardCode;
+$("#stdText").textContent=CONFIG.standardText;
+$("#goalText").textContent=CONFIG.goal;
+$("#mascot").textContent=CONFIG.mascot;
+$("#introTalk").innerHTML=CONFIG.intro;
+$("#reflectQ").textContent=CONFIG.reflectQuestion;
+$("#reflect").placeholder=CONFIG.reflectExample||"";
+$("#footer").textContent=`2022 개정 교육과정 ${CONFIG.subject} ${CONFIG.standardCode} · 초등 인터랙티브 활동지`;
+
+/* ---------- 상단 진행 메뉴 ---------- */
+(function buildNav(){
+  const nav=$("#nav"), items=[["s-concept","① 개념 쏙쏙"]];
+  CONFIG.activities.forEach((a,i)=>items.push(["act"+i,`${"②③④⑤⑥"[i]||""} ${a.short||"탐구 활동 "+(i+1)}`]));
+  items.push(["s-quiz",`${"②③④⑤⑥⑦"[CONFIG.activities.length]} 형성 평가`],["s-result",`${"③④⑤⑥⑦⑧"[CONFIG.activities.length]} 결과 저장`]);
+  items.forEach(([id,t])=>{const a=el("a","",t);a.href="#"+id;nav.appendChild(a);});
+})();
+
+/* ---------- 개념 카드 ---------- */
+const conceptsEl=$("#concepts");
+CONFIG.concepts.forEach(c=>{
+  const d=el("div","ccard",`<div class="emo">${c.emo}</div><h3>${c.title}</h3><p>${c.text}</p><div class="ex">${c.example||""}</div>`);
+  d.style.background=c.color||"var(--sky)";
+  d.addEventListener("click",()=>{d.classList.add("read");if([...conceptsEl.children].every(x=>x.classList.contains("read"))){markNav("s-concept");toast("개념 카드를 모두 읽었어요! 탐구 활동으로 가 볼까요? 🚀");}});
+  conceptsEl.appendChild(d);
+});
+if("IntersectionObserver" in window){const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){[...conceptsEl.children].forEach((c,i)=>setTimeout(()=>c.classList.add("show"),i*250));io.disconnect();}});},{threshold:.15});io.observe(conceptsEl);}
+else [...conceptsEl.children].forEach(c=>c.classList.add("show"));
+
+/* =====================================================================
+   드래그 앤 드롭 엔진 (마우스·터치 모두 지원)
+   - 카드를 끌어서 놓거나, 카드를 한 번 누른 뒤 놓을 곳을 눌러도 돼요.
+   ===================================================================== */
+let drag=null,picked=null;
+document.addEventListener("pointerdown",e=>{const c=e.target.closest("[data-drag]");if(!c||c.dataset.locked==="1")return;drag={el:c,x0:e.clientX,y0:e.clientY,ghost:null,dx:0,dy:0};});
+document.addEventListener("pointermove",e=>{
+  if(!drag)return;
+  if(!drag.ghost){
+    if(Math.hypot(e.clientX-drag.x0,e.clientY-drag.y0)<8)return;
+    const r=drag.el.getBoundingClientRect(),g=drag.el.cloneNode(true);
+    g.classList.add("ghost");g.classList.remove("selected");g.style.width=r.width+"px";
+    drag.dx=drag.x0-r.left;drag.dy=drag.y0-r.top;document.body.appendChild(g);drag.ghost=g;
+  }
+  e.preventDefault();
+  drag.ghost.style.left=(e.clientX-drag.dx)+"px";drag.ghost.style.top=(e.clientY-drag.dy)+"px";
+  document.querySelectorAll(".drop-hover").forEach(z=>z.classList.remove("drop-hover"));
+  const z=zoneAt(e.clientX,e.clientY);if(z&&z.dataset.act===drag.el.dataset.act)z.classList.add("drop-hover");
+},{passive:false});
+document.addEventListener("pointerup",e=>{
+  if(!drag)return;const d=drag;drag=null;
+  document.querySelectorAll(".drop-hover").forEach(z=>z.classList.remove("drop-hover"));
+  if(d.ghost){d.ghost.remove();const z=zoneAt(e.clientX,e.clientY);if(z)dropCard(d.el,z);clearPick();}
+  else{if(picked===d.el){clearPick();return;}clearPick();picked=d.el;d.el.classList.add("selected");}
+});
+document.addEventListener("pointercancel",()=>{if(drag&&drag.ghost)drag.ghost.remove();drag=null;});
+document.addEventListener("click",e=>{if(!picked||e.target.closest("[data-drag]"))return;const z=e.target.closest("[data-drop]");if(z){dropCard(picked,z);clearPick();}});
+function zoneAt(x,y){const t=document.elementFromPoint(x,y);return t?t.closest("[data-drop]"):null;}
+function clearPick(){if(picked)picked.classList.remove("selected");picked=null;}
+function dropCard(card,zone){
+  if(card.dataset.act!==zone.dataset.act)return;
+  const kind=zone.dataset.drop, holder=zone.querySelector(".holder")||zone;
+  if(kind==="pool"||kind==="bin"){holder.appendChild(card);}
+  else{ // 한 칸에 카드 1장: 이미 있으면 자리 바꾸기
+    const ex=holder.querySelector("[data-drag]");
+    if(ex&&ex!==card){
+      const fromZone=card.parentElement.closest("[data-drop]");
+      if(fromZone&&fromZone.dataset.drop==="slot")card.parentElement.appendChild(ex);   // 칸끼리 자리 바꾸기
+      else zone.closest("section").querySelector(".pool").appendChild(ex);              // 원래 카드는 카드 상자로
+    }
+    holder.appendChild(card);
+  }
+  const sec=zone.closest("section");
+  sec.querySelectorAll(".ok,.no").forEach(x=>x.classList.remove("ok","no"));
+}
+function makeCard(i,text,attrs){const c=el("div","dcard",text);c.dataset.drag="1";c.dataset.act=i;Object.assign(c.dataset,attrs||{});return c;}
+function makePool(i){const p=el("div","pool");p.dataset.drop="pool";p.dataset.act=i;return p;}
+
+/* =====================================================================
+   탐구 활동 만들기
+   ===================================================================== */
+const ICONS={sort:"🧺",order:"🔢",match:"🔗",fill:"✏️",map:"🗺️",calc:"🧮",listen:"🎧",dynamics:"🎚️",write:"📝"};
+const BG=["var(--sky)","var(--peach)","var(--mint)","var(--lilac)"];
+const actsEl=$("#activities");
+function initActivities(){ CONFIG.activities.forEach((a,i)=>{
+  const sec=el("section","box");sec.id="act"+i;
+  sec.innerHTML=`<div class="sec-title"><div class="ico" style="background:${BG[i%4]}">${a.icon||ICONS[a.type]}</div>
+    <h2>탐구 활동 ${i+1} · ${a.title}<small>${a.how||""}</small></h2></div>
+    <div class="talk"><div class="who">${a.guideEmoji||"🧑‍🏫"}</div><div class="bubble">${a.guide}</div></div>
+    <div class="body"></div>
+    <div class="row ctrl" style="margin-top:12px"></div>
+    <div class="feedback"></div>`;
+  actsEl.appendChild(sec);
+  state.acts[i]={done:false,tries:0,detail:""};
+  BUILD[a.type](i,a,sec);
+}); }
+function actDone(i,msg){
+  const s=state.acts[i];if(!s.done){confetti(18);}s.done=true;markNav("act"+i);
+  if(msg)showFb(document.querySelector(`#act${i} > .feedback`),"good",msg);renderSummary();
+}
+function actReset(i){state.acts[i]={done:false,tries:0,detail:""};markNav("act"+i,false);const f=document.querySelector(`#act${i} > .feedback`);f.className="feedback";renderSummary();}
+function addCtrl(sec,i,a,onCheck){
+  const ctrl=sec.querySelector(".ctrl");
+  if(onCheck){const b=el("button","btn","✅ 확인하기");b.onclick=onCheck;ctrl.appendChild(b);}
+  const r=el("button","btn gray","🔄 다시 하기");r.onclick=()=>{actReset(i);sec.querySelector(".body").innerHTML="";sec.querySelector(".ctrl").innerHTML="";BUILD[a.type](i,a,sec);};ctrl.appendChild(r);
+}
+
+const BUILD={
+  /* ---- 분류하기: 카드를 알맞은 바구니에 ---- */
+  sort(i,a,sec){
+    const body=sec.querySelector(".body"),pool=makePool(i),bins=el("div","bins");
+    a.categories.forEach((c,ci)=>{const b=el("div","bin",`<h4>${c.label}</h4><div class="holder"></div>`);b.style.background=c.color||BG[ci%4];b.dataset.drop="bin";b.dataset.act=i;b.dataset.cat=ci;bins.appendChild(b);});
+    shuffle(a.items.map((it,k)=>k)).forEach(k=>pool.appendChild(makeCard(i,a.items[k].text,{cat:a.items[k].cat,k})));
+    body.append(pool,bins);
+    addCtrl(sec,i,a,()=>{
+      const fb=sec.querySelector(":scope > .feedback");
+      if(pool.querySelector("[data-drag]")){showFb(fb,"bad","📌 아직 옮기지 않은 카드가 있어요. 모두 바구니에 넣은 뒤 확인해요!");return;}
+      state.acts[i].tries++;let right=0,wrongTips=[];
+      bins.querySelectorAll(".bin").forEach(b=>b.querySelectorAll("[data-drag]").forEach(c=>{const ok=+c.dataset.cat===+b.dataset.cat;c.classList.toggle("ok",ok);c.classList.toggle("no",!ok);if(ok)right++;else{const t=a.items[+c.dataset.k].tip;if(t)wrongTips.push(t);}}));
+      const n=a.items.length;state.acts[i].detail=`${n}개 중 ${right}개 정답 (${state.acts[i].tries}번째 확인)`;
+      if(right===n)actDone(i,a.success||"🎉 모두 알맞게 분류했어요!");
+      else showFb(fb,"bad",`🔎 ${n}개 중 ${right}개가 맞았어요. 빨간 카드를 다른 바구니로 옮겨 봐요.${wrongTips.length?"<br>💡 "+wrongTips.slice(0,2).join("<br>💡 "):""}`);
+      renderSummary();
+    });
+  },
+  /* ---- 순서 맞추기 / 짝짓기 / 지도: 칸마다 카드 1장 ---- */
+  order(i,a,sec){slotActivity(i,a,sec,a.steps.map((s,k)=>({left:"",card:s,key:String(k)})),"order");},
+  match(i,a,sec){slotActivity(i,a,sec,a.pairs.map((p,k)=>({left:p.left,card:p.right,key:String(k)})),"match");},
+  map(i,a,sec){slotActivity(i,a,sec,a.spots.map((p,k)=>({left:"",card:p.label,key:String(k),x:p.x,y:p.y})),"map");},
+  /* ---- 빈칸 채우기: 문장 속 [[정답]] 자리에 낱말 카드 ---- */
+  fill(i,a,sec){
+    const body=sec.querySelector(".body"),pool=makePool(i),box=el("div","fill-text");
+    const answers=[];
+    box.innerHTML=a.text.replace(/\[\[(.+?)\]\]/g,(m,w)=>{answers.push(w);return `<span class="blank" data-drop="slot" data-act="${i}" data-key="${esc(w)}"><span class="holder"></span></span>`;}).replace(/\n/g,"<br>");
+    shuffle(answers.concat(a.distractors||[])).forEach(w=>pool.appendChild(makeCard(i,esc(w),{key:w})));
+    body.append(pool,box);
+    addCtrl(sec,i,a,()=>checkSlots(i,a,sec,[...box.querySelectorAll(".blank")]));
+  },
+  calc(i,a,sec){calcActivity(i,a,sec);},
+  listen(i,a,sec){listenActivity(i,a,sec);},
+  dynamics(i,a,sec){dynamicsActivity(i,a,sec);},
+  write(i,a,sec){
+    const body=sec.querySelector(".body");
+    a.fields.forEach((f,k)=>{
+      const w=el("div","wfield");const id=`w${i}_${k}`;
+      w.innerHTML=`<label for="${id}">${f.label}</label>`+(f.kind==="color"?`<input type="color" id="${id}" value="${f.value||"#ffb3c7"}">`:f.kind==="textarea"?`<textarea id="${id}" placeholder="${esc(f.placeholder||"")}"></textarea>`:`<input type="text" id="${id}" placeholder="${esc(f.placeholder||"")}">`);
+      body.appendChild(w);
+    });
+    const check=()=>{
+      const vals=a.fields.map((f,k)=>{const v=$("#w"+i+"_"+k).value.trim();return f.kind==="color"?(v+(state.acts[i]["touched"+k]?"":"")):v;});
+      state.acts[i].answers=a.fields.map((f,k)=>({label:f.label.replace(/<[^>]+>/g,""),value:$("#w"+i+"_"+k).value.trim()}));
+      const filled=a.fields.every((f,k)=>f.kind==="color"||$("#w"+i+"_"+k).value.trim().length>0);
+      state.acts[i].detail=filled?"모두 작성":"작성 중";
+      if(filled)actDone(i,a.success||"🌟 생각을 멋지게 정리했어요!");else{state.acts[i].done=false;markNav("act"+i,false);renderSummary();}
+      return vals;
+    };
+    body.addEventListener("change",check);
+    addCtrl(sec,i,a,()=>{check();if(!state.acts[i].done)showFb(sec.querySelector(":scope > .feedback"),"bad","📌 아직 비어 있는 칸이 있어요. 모두 써 볼까요?");});
+  }
+};
+
+function slotActivity(i,a,sec,rows,kind){
+  const body=sec.querySelector(".body"),pool=makePool(i);
+  const order=kind==="order"?shuffleNotSame(rows.map((r,k)=>k)):shuffle(rows.map((r,k)=>k));
+  order.forEach(k=>pool.appendChild(makeCard(i,rows[k].card,{key:rows[k].key})));
+  let slots=[];
+  if(kind==="map"){
+    const wrap=el("div","mapwrap",MAPS[a.map]||"");
+    rows.forEach((r,k)=>{const s=el("div","spot",`<span class="holder" data-n="${k+1}"></span>`);s.style.left=r.x+"%";s.style.top=r.y+"%";s.dataset.drop="slot";s.dataset.act=i;s.dataset.key=r.key;wrap.appendChild(s);slots.push(s);s.querySelector(".holder").dataset.n=(a.spots[k].hint||k+1);});
+    body.append(pool,wrap);
+  }else{
+    const box=el("div","slots"+(kind==="match"?" match":""));
+    rows.forEach((r,k)=>{const s=el("div","slot",`<div class="num">${kind==="order"?k+1:(a.pairs[k].icon||"🔹")}</div>${kind==="match"?`<div class="left">${r.left}</div>`:""}<div class="holder"></div>`);s.dataset.drop="slot";s.dataset.act=i;s.dataset.key=r.key;box.appendChild(s);slots.push(s);});
+    body.append(pool,box);
+  }
+  addCtrl(sec,i,a,()=>checkSlots(i,a,sec,slots));
+}
+function checkSlots(i,a,sec,slots){
+  const fb=sec.querySelector(":scope > .feedback");
+  if(slots.some(s=>!s.querySelector("[data-drag]"))){showFb(fb,"bad","📌 아직 빈 칸이 있어요. 카드를 모두 채운 뒤 확인해요!");return;}
+  state.acts[i].tries++;let right=0;
+  slots.forEach(s=>{const ok=s.querySelector("[data-drag]").dataset.key===s.dataset.key;s.classList.toggle("ok",ok);s.classList.toggle("no",!ok);if(ok)right++;});
+  state.acts[i].detail=`${slots.length}개 중 ${right}개 정답 (${state.acts[i].tries}번째 확인)`;
+  if(right===slots.length)actDone(i,a.success||"🎉 모두 맞았어요!");
+  else showFb(fb,"bad",`🔎 ${slots.length}개 중 ${right}개가 맞았어요. 빨간 칸을 다시 생각해 봐요.${a.hint?"<br>💡 힌트: "+a.hint:""}`);
+  renderSummary();
+}
+
+/* ---- 혼합 계산: 먼저 계산할 기호를 눌러요 ---- */
+function calcActivity(i,a,sec){
+  const body=sec.querySelector(".body");let ei=0,errors=0,log=[];
+  const sym={"+":"+","-":"−","*":"×","/":"÷"};
+  const title=el("div","",""),expr=el("div","expr"),logEl=el("ol","calc-log"),next=el("button","btn blue","다음 식 ➡️");
+  next.style.display="none";body.append(title,expr,logEl,el("div","row").appendChild(next).parentNode);
+  let toks;
+  const fb=()=>sec.querySelector(":scope > .feedback");
+  function tokenize(s){return s.replace(/\s+/g,"").match(/\d+|[()+\-*/]/g).map(t=>/\d/.test(t)?{t:"n",v:+t}:t==="("||t===")"?{t:t}:{t:"o",v:t});}
+  function range(){let c=toks.findIndex(x=>x.t===")");if(c<0)return[0,toks.length-1,false];let o=c;while(toks[o].t!=="(")o--;return[o+1,c-1,true];}
+  function expected(){const[s,e]=range();for(let k=s;k<=e;k++)if(toks[k].t==="o"&&(toks[k].v==="*"||toks[k].v==="/"))return k;for(let k=s;k<=e;k++)if(toks[k].t==="o")return k;return -1;}
+  function cleanup(){let ch=true;while(ch){ch=false;for(let k=0;k+2<toks.length;k++)if(toks[k].t==="("&&toks[k+1].t==="n"&&toks[k+2].t===")"){toks.splice(k,3,toks[k+1]);ch=true;break;}}}
+  function render(newIdx){
+    expr.innerHTML="";
+    toks.forEach((x,k)=>{let n;if(x.t==="o"){n=el("button","op",sym[x.v]);n.onclick=()=>pick(k);}else if(x.t==="n"){n=el("span","num"+(k===newIdx?" new":""),x.v);}else n=el("span","par",x.t);expr.appendChild(n);});
+  }
+  function load(){toks=tokenize(a.expressions[ei]);log=[];logEl.innerHTML="";title.innerHTML=`<b>식 ${ei+1} / ${a.expressions.length}</b> — 가장 먼저 계산할 기호를 눌러요!`;next.style.display="none";render();}
+  function pick(k){
+    const ex=expected();
+    if(k!==ex){
+      errors++;const[s,e,par]=range();let tip;
+      if(par&&(k<s||k>e))tip="괄호 ( ) 안을 가장 먼저 계산해요!";
+      else if((toks[k].v==="+"||toks[k].v==="-")&&toks.slice(s,e+1).some(x=>x.v==="*"||x.v==="/"))tip="덧셈·뺄셈보다 <b>곱셈·나눗셈</b>을 먼저 계산해요!";
+      else tip="같은 단계의 계산은 <b>왼쪽부터</b> 차례로 해요!";
+      showFb(fb(),"bad","🤔 "+tip);return;
+    }
+    const A=toks[k-1].v,B=toks[k+1].v,op=toks[k].v;
+    const r=op==="+"?A+B:op==="-"?A-B:op==="*"?A*B:A/B;
+    log.push(`${A} ${sym[op]} ${B} = ${r}`);logEl.innerHTML=log.map(x=>`<li>${x}</li>`).join("");
+    toks.splice(k-1,3,{t:"n",v:r});cleanup();render(toks.findIndex(x=>x.t==="n"&&x.v===r));
+    fb().className="feedback";
+    if(toks.length===1){
+      title.innerHTML=`<b>식 ${ei+1}</b> 완성! 🎉 답은 <b>${r}</b>`;
+      if(ei<a.expressions.length-1){next.style.display="";}
+      else{state.acts[i].tries=errors;state.acts[i].detail=`식 ${a.expressions.length}개 완성 (실수 ${errors}번)`;actDone(i,a.success||`🎉 모든 식을 순서대로 계산했어요! (실수 ${errors}번)`);}
+    }
+  }
+  next.onclick=()=>{ei++;load();};
+  load();addCtrl(sec,i,a,null);
+}
+
+/* ---- 듣고 고르기 (영어 강세·억양) : 브라우저 내장 음성(TTS) 사용 ---- */
+function speakText(text,rate){
+  if(!("speechSynthesis" in window)){toast("이 기기에서는 소리를 낼 수 없어요. 선생님 발음을 들어요.");return;}
+  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=rate||0.8;
+  const v=speechSynthesis.getVoices().find(v=>/^en(-|_)US/i.test(v.lang))||speechSynthesis.getVoices().find(v=>/^en/i.test(v.lang));if(v)u.voice=v;
+  speechSynthesis.speak(u);
+}
+if("speechSynthesis" in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();}
+function listenActivity(i,a,sec){
+  const body=sec.querySelector(".body");let answered=0,right=0;
+  if(!("speechSynthesis" in window))body.appendChild(el("div","feedback show info","🔈 이 기기에서는 소리가 나오지 않아요. 선생님이 읽어 주는 소리를 듣고 골라요."));
+  a.items.forEach((it,k)=>{
+    const row=el("div","litem");const sp=el("button","speak","🔊");sp.title="듣기";sp.onclick=()=>speakText(it.say,it.rate||a.rate);
+    row.append(sp,el("span","say",it.mode==="stress"?`${k+1}. ${esc(it.meaning||"")}`:`${k+1}. ${esc(it.say)}`));
+    const opts=it.mode==="stress"?it.parts.map((p,pi)=>({label:p,val:pi})):[{label:"↗ 끝을 올려요",val:"up"},{label:"↘ 끝을 내려요",val:"down"}];
+    const msg=el("div","msg","");let tried=false;
+    opts.forEach(o=>{const b=el("button","choice",esc(o.label));b.onclick=()=>{
+      if(row.classList.contains("done"))return;
+      const ok=o.val===it.answer;
+      if(!tried){answered++;if(ok)right++;tried=true;}
+      if(ok){b.classList.add("correct");row.classList.add("done");
+        msg.innerHTML="⭕ "+(it.mode==="stress"?`<b>${it.parts.map((p,pi)=>pi===it.answer?p.toUpperCase():p).join("-")}</b> — 대문자 부분을 세고 길게 말해요.`:(it.answer==="up"?"묻는 말(Yes/No 질문)은 끝을 <b>올려요 ↗</b>":"설명하는 말은 끝을 <b>내려요 ↘</b>"))+(it.tip?" "+it.tip:"");
+        if(sec.querySelectorAll(".litem.done").length===a.items.length){state.acts[i].detail=`${a.items.length}개 중 첫 번째 시도에 ${right}개 정답`;actDone(i,(a.success||"🎉 모두 찾았어요!")+` (첫 시도 정답 ${right}/${a.items.length})`);}
+      }else{b.classList.add("incorrect");msg.innerHTML="🔁 다시 들어 보고 골라요! 🔊를 한 번 더 눌러 봐요.";}
+    };row.appendChild(b);});
+    row.appendChild(msg);body.appendChild(row);
+  });
+  addCtrl(sec,i,a,null);
+}
+
+/* ---- 셈여림 슬라이더 (음악) : 브라우저 내장 오디오(Web Audio) 사용 ---- */
+let AC=null;
+function playMelody(gainFrom,gainTo){
+  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();}catch(e){toast("이 기기에서는 소리를 낼 수 없어요.");return 0;}
+  if(AC.state==="suspended")AC.resume();
+  const notes=CONFIG.melody||[261.63,293.66,329.63,392,329.63,293.66,261.63];const dur=0.38;const t0=AC.currentTime+0.05;
+  notes.forEach((f,k)=>{
+    const g=gainFrom+(gainTo-gainFrom)*(notes.length>1?k/(notes.length-1):0);
+    const o=AC.createOscillator(),v=AC.createGain();o.type="triangle";o.frequency.value=f;
+    v.gain.setValueAtTime(0.0001,t0+k*dur);v.gain.exponentialRampToValueAtTime(Math.max(g,0.002),t0+k*dur+0.03);v.gain.exponentialRampToValueAtTime(0.0001,t0+k*dur+dur*0.95);
+    o.connect(v).connect(AC.destination);o.start(t0+k*dur);o.stop(t0+(k+1)*dur);
+  });
+  return notes.length*dur;
+}
+function dynamicsActivity(i,a,sec){
+  const body=sec.querySelector(".body"),L=a.levels;let mi=0;
+  body.innerHTML=`<div class="dyn"><div>
+      <div class="dyn-sym">${L[0].sym}</div><div class="dyn-name"></div>
+      <div class="dyn-bars">${L.map(()=>"<i></i>").join("")}</div>
+      <input type="range" min="0" max="${L.length-1}" step="1" value="0" aria-label="셈여림">
+      <div class="row" style="justify-content:center;margin-top:6px">
+        <button class="btn blue play">🔊 들어 보기</button>
+        <button class="btn small cresc">𝆒 점점 세게</button><button class="btn small decresc">𝆓 점점 여리게</button>
+      </div></div>
+    <div class="mission"><div>🎯 미션 <span class="mn"></span></div><div class="target"></div><div class="mt"></div></div></div>`;
+  const rng=body.querySelector("input"),symEl=body.querySelector(".dyn-sym"),nameEl=body.querySelector(".dyn-name"),bars=[...body.querySelectorAll(".dyn-bars i")];
+  const fbEl=()=>sec.querySelector(":scope > .feedback");
+  function upd(){const v=+rng.value,l=L[v];symEl.textContent=l.sym;nameEl.innerHTML=`${l.name} · <b>${l.ko}</b>`;bars.forEach((b,k)=>{b.style.height=(18+k*12)+"px";b.style.opacity=k<=v?1:.2;});symEl.style.transform=`scale(${0.8+v*0.12})`;}
+  function showMission(){
+    const box=body.querySelector(".mission");
+    if(mi>=a.missions.length){box.innerHTML="🏅 미션을 모두 해냈어요!<br>이제 '점점 세게', '점점 여리게'도 들어 봐요.";return;}
+    const t=L.find(l=>l.sym===a.missions[mi]);
+    box.querySelector(".mn").textContent=`${mi+1} / ${a.missions.length}`;box.querySelector(".target").textContent=t.sym;
+    box.querySelector(".mt").innerHTML=`슬라이더를 <b>${t.name}(${t.ko})</b>에 맞추고 🔊 들어 보기를 눌러요.`;
+  }
+  rng.oninput=upd;
+  body.querySelector(".play").onclick=()=>{
+    const l=L[+rng.value];playMelody(l.gain,l.gain);
+    if(mi<a.missions.length){
+      if(l.sym===a.missions[mi]){mi++;showFb(fbEl(),"good",`⭕ 맞아요! <b>${l.sym}</b>는 '${l.ko}'예요.`);showMission();
+        if(mi===a.missions.length){state.acts[i].tries=state.acts[i].tries||0;state.acts[i].detail=`미션 ${a.missions.length}개 성공 (실수 ${state.acts[i].tries}번)`;actDone(i,a.success);}}
+      else{state.acts[i].tries++;showFb(fbEl(),"bad",`🤔 지금은 <b>${l.sym}</b>(${l.ko})예요. 미션 기호를 다시 확인해요!`);}
+    }
+  };
+  body.querySelector(".cresc").onclick=()=>{playMelody(L[0].gain,L[L.length-1].gain);showFb(fbEl(),"info","𝆒 <b>crescendo(크레셴도)</b> : 점점 세게! 소리가 커지는 게 들리나요?");};
+  body.querySelector(".decresc").onclick=()=>{playMelody(L[L.length-1].gain,L[0].gain);showFb(fbEl(),"info","𝆓 <b>decrescendo(데크레셴도)</b> : 점점 여리게! 소리가 작아지는 게 들리나요?");};
+  upd();showMission();addCtrl(sec,i,a,null);
+}
+
+/* ---- 지도 그림 (사회) ---- */
+const MAPS={
+
+};
+
+/* =====================================================================
+   형성 평가
+   ===================================================================== */
+function buildQuiz(){
+  const box=$("#quiz");box.innerHTML="";state.quiz.answers=CONFIG.quiz.map(()=>null);state.quiz.done=false;$("#scorePanel").classList.remove("show");
+  CONFIG.quiz.forEach((it,qi)=>{
+    const q=el("div","q",`<h3><span class="qn">${qi+1}</span>${esc(it.q).replace(/\n/g,"<br>")}</h3><div class="opts"></div><div class="feedback"></div>`);
+    it.options.forEach((o,oi)=>{const b=el("button","opt",`${"①②③④⑤"[oi]} ${esc(o)}`);b.onclick=()=>answer(qi,oi,q);q.querySelector(".opts").appendChild(b);});
+    box.appendChild(q);
+  });
+}
+function answer(qi,oi,q){
+  if(state.quiz.answers[qi]!==null)return;const it=CONFIG.quiz[qi],ok=oi===it.answer;state.quiz.answers[qi]=oi;
+  q.querySelectorAll(".opt").forEach((b,k)=>{b.disabled=true;if(k===it.answer)b.classList.add("correct");else if(k===oi)b.classList.add("incorrect");});
+  showFb(q.querySelector(".feedback"),ok?"good":"bad",(ok?"⭕ <b>정답이에요!</b>":`❌ <b>아쉬워요! 정답은 ${it.answer+1}번이에요.</b>`)+"<br>📖 "+it.explain);
+  if(state.quiz.answers.every(a=>a!==null))finishQuiz();
+}
+function quizScore(){const n=CONFIG.quiz.length,r=state.quiz.answers.filter((a,i)=>a===CONFIG.quiz[i].answer).length;return{r,n,pct:Math.round(r/n*100)};}
+function finishQuiz(){
+  state.quiz.done=true;const{r,n,pct}=quizScore();
+  $("#scoreBig").textContent=`${n}문제 중 ${r}문제 정답 (${pct}점)`;$("#stars").textContent="⭐".repeat(r)+"☆".repeat(n-r);
+  $("#praise").textContent=CONFIG.praise.find(p=>pct>=p.min).msg;$("#scorePanel").classList.add("show");markNav("s-quiz");
+  if(pct>=80)confetti(30);setTimeout(()=>$("#scorePanel").scrollIntoView({behavior:"smooth",block:"center"}),300);renderSummary();
+}
+$("#quizRetry").onclick=()=>{markNav("s-quiz",false);buildQuiz();renderSummary();$("#s-quiz").scrollIntoView({behavior:"smooth"});};
+
+/* =====================================================================
+   결과 요약 · 저장 · 인쇄
+   ===================================================================== */
+function resultData(){
+  const q=quizScore();
+  return{name:$("#stuName").value.trim(),id:$("#stuId").value.trim(),date:new Date().toLocaleString("ko-KR"),
+    acts:CONFIG.activities.map((a,i)=>({title:a.title,done:state.acts[i].done,detail:state.acts[i].detail,answers:state.acts[i].answers||null})),
+    quizDone:state.quiz.done,quizRight:q.r,quizTotal:q.n,quizPct:q.pct,reflect:$("#reflect").value.trim()};
+}
+function renderSummary(){
+  const d=resultData();
+  $("#summary").innerHTML=`<ul style="margin:0;padding-left:20px">
+    <li>👤 <b>${esc(d.name||"(이름 미입력)")}</b> / 학번 ${esc(d.id||"-")}</li>
+    ${d.acts.map((a,i)=>`<li>${CONFIG.activities[i].icon||ICONS[CONFIG.activities[i].type]} ${esc(a.title)}: ${a.done?"✅ 완료":"⏳ 진행 중"}${a.detail?` — ${esc(a.detail)}`:""}${a.answers?`<ul>${a.answers.map(x=>`<li>${esc(x.label)} : ${esc(x.value||"-")}</li>`).join("")}</ul>`:""}</li>`).join("")}
+    <li>📝 형성 평가: ${d.quizDone?`${d.quizTotal}문제 중 ${d.quizRight}문제 정답 (${d.quizPct}점)`:"⏳ 아직 다 풀지 않음"}</li></ul>
+    <div class="print-only" style="margin-top:8px"><b>✍️ 배운 점:</b> ${esc(d.reflect||"")}</div>`;
+}
+["#stuName","#stuId","#reflect"].forEach(s=>$(s).addEventListener("input",()=>{renderSummary();if($("#reflect").value.trim())markNav("s-result");}));
+
+$("#saveBtn").addEventListener("click",async()=>{
+  const d=resultData();
+  if(!d.name){toast("✏️ 맨 위에 이름을 먼저 써 주세요!");$("#stuName").focus();return;}
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({name:d.name,id:d.id,reflect:d.reflect}));}catch(e){}
+  const lines=[`[${CONFIG.subject}] ${CONFIG.unit} 활동 결과`,`성취기준: ${CONFIG.standardCode} ${CONFIG.standardText}`,`이름: ${d.name}   학번: ${d.id||"-"}   저장 시각: ${d.date}`,""];
+  d.acts.forEach((a,i)=>{lines.push(`■ 탐구 활동 ${i+1} (${a.title}): ${a.done?"완료":"미완료"}${a.detail?" — "+a.detail:""}`);if(a.answers)a.answers.forEach(x=>lines.push(`   - ${x.label}: ${x.value||"-"}`));});
+  lines.push(`■ 형성 평가: ${d.quizDone?`${d.quizTotal}문제 중 ${d.quizRight}문제 정답 (${d.quizPct}점)`:"미완료"}`);
+  CONFIG.quiz.forEach((q,i)=>{const a=state.quiz.answers[i];lines.push(`   ${i+1}번: ${a===null?"미응답":(a===q.answer?"O":"X")+` (내 답 ${a+1}번 / 정답 ${q.answer+1}번)`}`);});
+  lines.push("",`■ 배운 점: ${d.reflect||"(작성하지 않음)"}`);
+  const n=new Date(),p=v=>String(v).padStart(2,"0");
+  const stamp=`${n.getFullYear()}${p(n.getMonth()+1)}${p(n.getDate())}-${p(n.getHours())}${p(n.getMinutes())}`;
+  const fileName=safeName(`${CONFIG.fileTag}_${d.id?d.id+"_":""}${d.name}_${stamp}.txt`),content="﻿"+lines.join("\n");
+  const where=await saveToChosenFolder(fileName,content);
+  if(where){markNav("s-result");toast(`📁 '${where}' 폴더에 저장했어요!`);return;}
+  downloadFile(fileName,content);markNav("s-result");toast("💾 '다운로드' 폴더에 저장했어요! 파일을 선생님께 제출해요.");
+});
+$("#printBtn").onclick=()=>{renderSummary();window.print();};
+
+/* =====================================================================
+   📁 저장 폴더 기능
+   - PC의 크롬·엣지: 폴더를 한 번 고르면 그 폴더에 바로 저장돼요.
+   - 아이패드·스마트폰·사파리 등: 자동으로 '다운로드' 폴더에 저장돼요.
+   ===================================================================== */
+const FS_SUPPORTED=("showDirectoryPicker" in window)&&window.isSecureContext&&window.self===window.top;
+let dirHandle=null;
+function safeName(s){return s.replace(/[\\/:*?"<>|]/g,"_");}
+function downloadFile(name,content){const blob=new Blob([content],{type:"text/plain;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open("worksheet-folder",1);r.onupgradeneeded=()=>r.result.createObjectStore("h");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+async function dbGet(k){try{const db=await openDB();return await new Promise(res=>{const q=db.transaction("h").objectStore("h").get(k);q.onsuccess=()=>res(q.result||null);q.onerror=()=>res(null);});}catch(e){return null;}}
+async function dbSet(k,v){try{const db=await openDB();await new Promise(res=>{const tx=db.transaction("h","readwrite");tx.objectStore("h").put(v,k);tx.oncomplete=res;tx.onerror=res;});}catch(e){}}
+function showFolder(){const L=$("#folderLabel");if(dirHandle){L.textContent=`✅ 저장 폴더: 📁 ${dirHandle.name}`;L.classList.add("on");$("#folderBtn").textContent="📁 저장 폴더 바꾸기";}else{L.textContent="아직 폴더를 고르지 않았어요 → 고르지 않으면 '다운로드' 폴더에 저장돼요";L.classList.remove("on");$("#folderBtn").textContent="📁 저장 폴더 선택";}}
+async function pickFolder(){try{dirHandle=await window.showDirectoryPicker({id:"worksheet-save",mode:"readwrite"});await dbSet("dir",dirHandle);showFolder();toast(`📁 '${dirHandle.name}' 폴더에 저장하도록 설정했어요!`);}catch(e){if(e&&e.name!=="AbortError")toast("⚠️ 이 폴더는 선택할 수 없어요. 다른 폴더를 골라 주세요.");}}
+async function saveToChosenFolder(name,content){
+  if(!FS_SUPPORTED||!dirHandle)return null;
+  try{let perm=await dirHandle.queryPermission({mode:"readwrite"});if(perm!=="granted")perm=await dirHandle.requestPermission({mode:"readwrite"});
+    if(perm!=="granted"){toast("폴더 사용을 허용하지 않아 '다운로드' 폴더에 저장할게요.");return null;}
+    const fh=await dirHandle.getFileHandle(name,{create:true});const w=await fh.createWritable();await w.write(content);await w.close();return dirHandle.name;
+  }catch(e){console.warn("폴더 저장 실패 → 다운로드로 대신 저장",e);return null;}
+}
+(async function initFolder(){
+  if(!FS_SUPPORTED){$("#saveNote").textContent="※ 이 기기·브라우저에서는 결과가 '다운로드' 폴더에 글 파일(.txt)로 저장돼요. (원하는 폴더에 저장하려면 PC의 크롬이나 엣지에서 열어요) PDF는 인쇄 창에서 'PDF로 저장'을 고르세요.";return;}
+  $("#folderBox").classList.add("show");$("#folderBtn").addEventListener("click",pickFolder);dirHandle=await dbGet("dir");showFolder();
+  $("#saveNote").textContent="※ 저장 폴더를 한 번 골라 두면 다음부터 그 폴더에 바로 저장돼요. 브라우저를 다시 열면 '허용'을 한 번 눌러야 할 수 있어요. PDF는 인쇄 창에서 'PDF로 저장'을 고르세요.";
+})();
+
+/* ---------- 이전에 쓴 이름·배운 점 불러오기 ---------- */
+try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");if(s){$("#stuName").value=s.name||"";$("#stuId").value=s.id||"";$("#reflect").value=s.reflect||"";}}catch(e){}
+
+/* ---------- 시작 ---------- */
+initActivities();buildQuiz();renderSummary();
+</script>
+</body>
+</html>
