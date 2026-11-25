@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🗺️ 6학년 활동지 학습맵 — 교수학습 포털</title>
+<!--
+=====================================================================
+  👩‍🏫 선생님께
+  - 이 포털은 서버 없이 돌아가는 웹앱이에요. 폴더째 GitHub Pages나 학교 웹 폴더에 올리면 돼요.
+  - 학교 이름, 학기 주차 수, 색 같은 설정은 assets/portal.js 맨 위 SETTINGS에서 바꿔요.
+  - 활동지를 새로 넣었다면 tools/build_catalog.py를 실행하면 목록이 자동으로 갱신돼요 (README.md 참고).
+=====================================================================
+-->
+<link rel="stylesheet" href="assets/portal.css">
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<!-- 교사용 상단 바 (학생 모드에서는 숨김) -->
+<header class="topbar" id="topbar">
+  <div class="brand"><span class="logo">🗺️</span><div><b>6학년 활동지 학습맵</b><small id="schoolName"></small></div></div>
+  <nav class="tabs" aria-label="주 메뉴">
+    <a href="#map" data-tab="map">🗺️ 학습맵</a>
+    <a href="#find" data-tab="find">🔎 활동지 찾기</a>
+    <a href="#plan" data-tab="plan">📅 내 진도표</a>
+    <a href="#set" data-tab="set">🎒 수업 세트</a>
+  </nav>
+  <div class="tools">
+    <label class="search"><span aria-hidden="true">🔍</span><input id="gSearch" type="search" placeholder="검색 ( / 키 )" aria-label="활동지 검색"></label>
+    <button class="ibtn" id="bigBtn" title="전자칠판 모드 (글자 크게)" aria-pressed="false">🖥️</button>
+  </div>
+</header>
+
+<main id="main" tabindex="-1"></main>
+
+<!-- 상세 모달 -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" hidden>
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
+<!-- QR 전체 화면 -->
+<div class="qrfull" id="qrfull" hidden>
+  <div class="qrinner"><h2 id="qrTitle"></h2><div id="qrBox"></div><p id="qrLink" class="qrlink"></p><button class="btn" id="qrClose">닫기 ✖</button></div>
+</div>
+
+<!-- 학생 모드: 활동지 전체 화면 -->
+<div class="player" id="player" hidden>
+  <iframe id="playerFrame" title="활동지"></iframe>
+  <button class="backbtn" id="backBtn">⬅ 오늘의 활동으로 돌아가기</button>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/qrcode.js"></script>
+<script src="data/bundle.js"></script>
+<script src="assets/portal.js"></script>
+</body>
+</html>
